@@ -5,6 +5,15 @@ import Link from "next/link";
 import Image from "next/image";
 import PasswordInput from "@/components/ui/password_input";
 import TextInput from "@/components/ui/text_input";
+import { Form } from "@/components/ui/form";
+import SubmitButton from "@/components/ui/submit_button";
+import { loginUser } from "./actions";
+import { UserLoginResponse } from "@/types/auth";
+
+const initialState: UserLoginResponse = {
+  error: false,
+  messages: [],
+};
 
 export default async function Login() {
   return (
@@ -12,7 +21,6 @@ export default async function Login() {
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
         <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8 text-center">
-            {/* <img className="w-8 h-8 mr-2" src="/images/logo.png" alt="logo" /> */}
             <div className="flex justify-center">
               <Image
                 src="/images/logo.png" // Route of the image file
@@ -25,17 +33,15 @@ export default async function Login() {
               Log in to Undetectable AI
             </h1>
             <h3 className="text-[16px] text-[#14151A]">Enter your username and password to continue</h3>
-            <form className="space-y-4 md:space-y-6" action="#">
+            <Form initialState={initialState} action={loginUser}>
               <div>
                 <TextInput name="username" placeholder="Username" />
               </div>
               <div>
                 <PasswordInput name="password" />
               </div>
-              <Button className="rounded-xl" type="submit">
-                Log in
-              </Button>
-            </form>
+              <SubmitButton className="rounded-xl">Log in</SubmitButton>
+            </Form>
           </div>
         </div>
       </div>

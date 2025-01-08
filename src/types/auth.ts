@@ -11,3 +11,10 @@ export interface UserRegistrationRequest {
 }
 
 export type UserRegistrationResponse = ActionResponse<User>;
+
+export interface UserLoginRequest {
+  username: string;
+  password: string;
+}
+
+export type UserLoginResponse = ActionResponse<{ user: User; token: string }>;
