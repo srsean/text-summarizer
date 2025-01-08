@@ -15,12 +15,12 @@ const Pagination: React.FC<PaginationProps> = ({ page, pageSize, itemsCount }) =
 
   const handlePrevious = () => {
     if (page === 1) return;
-    router.push(`/history/page=${page - 1}`);
+    router.push(`/history/?page=${page - 1}`);
   };
 
   const handleNext = () => {
     if (page === Math.ceil(itemsCount / pageSize)) return;
-    router.push(`/history/page=${page + 1}`);
+    router.push(`/history/?page=${page + 1}`);
   };
 
   const activeStyle = "text-black bg-[#0A0F290A]";

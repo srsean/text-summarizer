@@ -38,11 +38,11 @@ export default async function History({
           <DropdownFilter />
           <SearchBar />
         </div>
-        <div className="flex flex-col flex-grow items-center justify-between w-full mb-5">
+        <div className="flex flex-col flex-grow items-center w-full mb-5">
           {textSummaryHistory.data?.map((textSummary) => (
             <div
               key={textSummary.id}
-              className="flex flex-col gap-5 items-center justify-between w-full p-5 mb-5 border border-lg rounded-xl"
+              className="flex flex-col gap-5 items-center justify-between w-full p-5 mb-2 border border-lg rounded-xl"
             >
               <div className="flex flex-row w-full justify-between gap-5">
                 <span className="line-clamp-3 overflow-hidden text-ellipsis text-[14px]">{textSummary.output}</span>
