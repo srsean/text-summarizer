@@ -21,13 +21,9 @@ const routes = (historyCount: number) => [
   },
 ];
 
-const SidebarLinks = ({ historyCount }: { historyCount: number }) => {
+const SidebarLinks = () => {
   const pathname = usePathname();
-  const { textSummaryHistoryCount, setTextSummaryHistoryCount } = useSidebarStore((state) => state);
-
-  useEffect(() => {
-    setTextSummaryHistoryCount(historyCount);
-  }, [historyCount]);
+  const { textSummaryHistoryCount } = useSidebarStore((state) => state);
 
   return (
     <ul className="flex-1 p-2 space-y-2">

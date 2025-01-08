@@ -1,4 +1,4 @@
-"use server";
+"use client";
 import { IoMdLogOut } from "react-icons/io";
 
 import { getTextSummaryHistoryCount, getUserData } from "@/app/actions";
@@ -8,10 +8,25 @@ import Link from "next/link";
 import Avatar from "./avatar";
 import Button from "./button";
 import SidebarLinks from "./sidebar-links";
+import { useEffect } from "react";
+import useSidebarStore from "@/stores/sidebar-store";
 
-const Sidebar = async () => {
-  const userData = await getUserData();
-  const historyCount = await getTextSummaryHistoryCount();
+const Sidebar = () => {
+  const { userData, setUserData, setTextSummaryHistoryCount } = useSidebarStore((state) => state);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const user = await getUserData();
+      setUserData(user);
+    };
+    fetchData();
+
+    const fetchHistoryCount = async () => {
+      const historyCount = await getTextSummaryHistoryCount();
+      setTextSummaryHistoryCount(historyCount);
+    };
+    fetchHistoryCount();
+  }, []);
 
   return (
     <div className="h-full w-[280px] bg-[#14151A] text-white flex flex-col">
@@ -36,7 +51,7 @@ const Sidebar = async () => {
           <Button className="p-4 bg-white !text-black rounded-xl">+ Summarize Text</Button>
         </Link>
       </div>
-      <SidebarLinks historyCount={historyCount} />
+      <SidebarLinks />
     </div>
   );
 };
