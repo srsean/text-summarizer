@@ -23,6 +23,18 @@ export async function getUserData() {
   return user;
 }
 
+export async function getTextSummaryHistoryCount() {
+  const userData = await getUserData();
+
+  const historyCount = await prisma.textSummary.count({
+    where: {
+      userId: userData?.id as number,
+    },
+  });
+
+  return historyCount;
+}
+
 const schema = z.object({
   inputWords: z.string().nonempty("Input text is required"),
 });

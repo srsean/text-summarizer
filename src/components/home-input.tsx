@@ -16,6 +16,7 @@ import SummaryInputText from "./ui/summary-input-text";
 import SummaryInputButtons from "./ui/summary-input-buttons";
 import { useEffect } from "react";
 import { TextSummaryResponse } from "@/types/text-summary";
+import useSidebarStore from "@/stores/sidebar-store";
 
 const initialState: TextSummaryResponse = {
   error: false,
@@ -26,10 +27,14 @@ const HomeInput: React.FC = () => {
   const { showMultiText, inputWordsCount, inputCharCount, setMultiText, setInputWords, setOutputWords } = useHomeStore(
     (state) => state
   );
+  const { textSummaryHistoryCount, setTextSummaryHistoryCount } = useSidebarStore((state) => state);
   const [formState, formAction] = useFormState(summaryText, initialState);
 
   useEffect(() => {
-    setOutputWords(formState?.data?.output || "");
+    if (formState?.data?.input) {
+      setInputWords(formState?.data?.input || "");
+      setTextSummaryHistoryCount(textSummaryHistoryCount + 1);
+    }
   }, [formState]);
 
   const handleEnterText = () => {

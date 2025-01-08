@@ -1,35 +1,17 @@
 "use server";
-import React from "react";
-import { RiHomeSmile2Fill } from "react-icons/ri";
-import { HiClock } from "react-icons/hi2";
 import { IoMdLogOut } from "react-icons/io";
 
-import Button from "./button";
+import { getTextSummaryHistoryCount, getUserData } from "@/app/actions";
 import { destroySession } from "@/helpers/session";
+import { headers } from "next/headers";
 import Link from "next/link";
 import Avatar from "./avatar";
-import { getUserData } from "@/app/actions";
-import type { NextRequest } from "next/server";
-import { headers } from "next/headers";
-
-const routes = [
-  {
-    title: "Home",
-    icon: <RiHomeSmile2Fill size={15} />,
-    route: "",
-  },
-  {
-    title: "History",
-    icon: <HiClock size={15} />,
-    badge: 15,
-    route: "/history",
-  },
-];
+import Button from "./button";
+import SidebarLinks from "./sidebar-links";
 
 const Sidebar = async () => {
-  const heads = headers();
-  const pathname = heads.get("x-invoke-path") || "";
   const userData = await getUserData();
+  const historyCount = await getTextSummaryHistoryCount();
 
   return (
     <div className="h-full w-[280px] bg-[#14151A] text-white flex flex-col">
@@ -49,30 +31,12 @@ const Sidebar = async () => {
               <IoMdLogOut size={20} />
             </button>
           </form>
-          {/* <IoMdLogOut className="cursor-pointer text-[#FFFFFF99]" size={20} onClick={handleLogout} /> */}
         </div>
         <Link href="/">
           <Button className="p-4 bg-white !text-black rounded-xl">+ Summarize Text</Button>
         </Link>
       </div>
-      <ul className="flex-1 p-2 space-y-2">
-        {routes.map((route) => (
-          <li
-            key={route.title}
-            className={`flex items-center gap-3 p-2 rounded-xl ${
-              pathname === route.route ? "bg-[#FFFFFF14]" : "hover:bg-[#FFFFFF14]"
-            }`}
-          >
-            <Link href={route.route} className="flex items-center gap-3 w-full">
-              {route.icon}
-              <span>{route.title}</span>
-              {route.badge && (
-                <span className="bg-[#3368F04D] border border-[#FFFFFF24] text-xs rounded-sm px-1">{route.badge}</span>
-              )}
-            </Link>
-          </li>
-        ))}
-      </ul>
+      <SidebarLinks historyCount={historyCount} />
     </div>
   );
 };
