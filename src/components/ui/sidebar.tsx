@@ -32,7 +32,7 @@ const Sidebar = async () => {
   const userData = await getUserData();
 
   return (
-    <div className="min-h-screen h-full w-[280px] bg-[#14151A] text-white flex flex-col">
+    <div className="h-full w-[280px] bg-[#14151A] text-white flex flex-col">
       <div className="flex flex-col p-3">
         <div className="py-4 flex justify-between items-center">
           <div className="  flex items-center space-x-4">
