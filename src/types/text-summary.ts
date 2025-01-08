@@ -13,3 +13,9 @@ export interface TextSummariesRequest {
 }
 
 export type TextSummariesResponse = PaginationResponse<TextSummary[]>;
+
+export interface DeleteTextSummaryRequest {
+  textSummaryId: number;
+}
+
+export type DeleteTextSummaryResponse = ActionResponse<TextSummary>;

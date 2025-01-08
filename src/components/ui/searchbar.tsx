@@ -1,13 +1,16 @@
 "use client";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { CiSearch } from "react-icons/ci";
+import { debounce } from "lodash";
 
 const SearchBar: React.FC = () => {
-  const [query, setQuery] = useState("");
+  const router = useRouter();
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(event.target.value);
-  };
+  const handleInputChange = debounce((event: React.ChangeEvent<HTMLInputElement>) => {
+    const query = event.target.value;
+    router.push(`/history?search=${query}`);
+  }, 500);
 
   return (
     <div className="relative w-[400px]">

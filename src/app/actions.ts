@@ -16,11 +16,7 @@ export async function getUserData() {
     throw new Error("User data not found");
   }
 
-  const user = await prisma.user.findUnique({
-    where: { id: userData.id as number },
-  });
-
-  return user;
+  return userData;
 }
 
 export async function getTextSummaryHistoryCount() {

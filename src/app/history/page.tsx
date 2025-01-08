@@ -1,3 +1,4 @@
+"use server";
 import DropdownFilter from "@/components/ui/dropdown-filter";
 import SearchBar from "@/components/ui/searchbar";
 import SummaryItemActions from "@/components/ui/summary-item-actions";
@@ -10,10 +11,24 @@ import Pagination from "@/components/ui/pagination";
 import { formatDateTime } from "@/utils/format-datetime";
 import { RxTextAlignLeft } from "react-icons/rx";
 
-export default async function History() {
-  const textSummaryHistory = await getTextSummaryHistory();
+import DeleteTextSummaryHistoryModal from "@/components/delete-history-modal";
+
+export default async function History({
+  params,
+  searchParams,
+}: {
+  params: { slug: string };
+  searchParams?: { [key: string]: string | string[] | undefined };
+}) {
+  const page = searchParams?.page ? parseInt(searchParams.page as string) : 1;
+  const search = (searchParams?.search ? searchParams.search : "") as string;
+  const dateRange = (searchParams?.dateRange ? searchParams.dateRange : "") as string;
+
+  const textSummaryHistory = await getTextSummaryHistory({ page, search, dateRange });
+
   return (
     <UserLayout>
+      <DeleteTextSummaryHistoryModal />
       <div className="flex flex-col px-6 py-8 mx-auto lg:py-0 h-full w-full text-black">
         <div className="flex flex-col mb-5">
           <h1 className="font-bold text-[22px]">History</h1>
