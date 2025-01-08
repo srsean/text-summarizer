@@ -1,9 +1,15 @@
 "use client";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import { FaCalendar } from "react-icons/fa6";
 
-const filters = [
+interface Filter {
+  id: number;
+  name: string;
+  value: string;
+}
+
+const filters: Filter[] = [
   { id: 1, name: "Last 7 days", value: "last-7-days" },
   { id: 2, name: "Last 30 days", value: "last-30-days" },
   { id: 3, name: "Today", value: "today" },
@@ -11,8 +17,11 @@ const filters = [
 
 const DropdownFilter: React.FC = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedFilter, setSelectedFilter] = useState(filters[0]);
+  const [selectedFilter, setSelectedFilter] = useState<Filter>(
+    filters.find((filter) => filter.value === searchParams.get("dateRange")) || filters[0]
+  );
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -33,9 +42,11 @@ const DropdownFilter: React.FC = () => {
     setIsOpen(!isOpen);
   };
 
-  useEffect(() => {
-    router.push(`?dateRange=${selectedFilter.value}`);
-  }, [selectedFilter]);
+  const onFilterChange = (filter: Filter) => {
+    setSelectedFilter(filter);
+    setIsOpen(false);
+    router.push(`?dateRange=${filter.value}`);
+  };
 
   return (
     <div className="relative inline-block text-left" ref={dropdownRef}>
@@ -69,10 +80,7 @@ const DropdownFilter: React.FC = () => {
               key={filter.id}
               className="block px-4 py-2 text-sm text-gray-700 text-left hover:bg-gray-100 w-full"
               role="menuitem"
-              onClick={() => {
-                setSelectedFilter(filter);
-                setIsOpen(false);
-              }}
+              onClick={() => onFilterChange(filter)}
             >
               {filter.name}
             </button>
