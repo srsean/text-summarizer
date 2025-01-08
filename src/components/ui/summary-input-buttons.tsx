@@ -28,7 +28,7 @@ const SummaryInputButtons: React.FC = () => {
       <button
         type="submit"
         className={`flex flex-row gap-3 items-center justify-center bg-white !text-black border border-[#FFFFFF52] rounded-xl disabled:bg-gray-900 disabled:!text-white py-2 px-5`}
-        disabled={pending}
+        disabled={pending || !showMultiText}
       >
         {pending ? (
           <Image
