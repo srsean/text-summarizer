@@ -33,7 +33,9 @@ export function Form({ action, initialState, children }: FormProps) {
       });
 
       if (formState.redirect_url) {
-        router.push(formState.redirect_url);
+        setTimeout(() => {
+          router.push(formState.redirect_url);
+        }, 500);
       }
     }
   }, [formState]);
