@@ -19,3 +19,8 @@ export async function getUserData() {
 
   return user;
 }
+
+export async function summaryText(formData: FormData) {
+  await new Promise((resolve) => setTimeout(resolve, 3000));
+  return "This is a summary of the text";
+}
