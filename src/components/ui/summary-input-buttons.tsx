@@ -22,10 +22,10 @@ const SummaryInputButtons: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-row gap-3">
+    <div className="flex flex-col lg:flex-row gap-3">
       {showMultiText && !pending && (
         <button
-          className="flex flex-row gap-2 items-center justify-center !w-[100px]  text-white border border-white rounded-xl"
+          className="flex flex-row gap-2 items-center justify-center h-10 lg:!w-[100px]  text-white border border-white rounded-xl"
           onClick={reset}
         >
           <GrPowerReset className="text-[#FFFFFF52] text-[20px]" />
@@ -34,7 +34,7 @@ const SummaryInputButtons: React.FC = () => {
       )}
       <button
         type="submit"
-        className={`flex flex-row gap-3 items-center justify-center bg-white !text-black border border-[#FFFFFF52] rounded-xl disabled:bg-gray-900 disabled:!text-white py-2 px-5`}
+        className={`flex flex-row h-10 gap-3 items-center justify-center bg-white !text-black border border-[#FFFFFF52] rounded-xl disabled:bg-gray-900 disabled:!text-white py-2 px-5`}
         disabled={pending || !showMultiText}
       >
         {pending ? (

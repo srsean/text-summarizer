@@ -87,7 +87,7 @@ const HomeInput: React.FC = () => {
             <SummaryInputText />
           )}
         </div>
-        <div className="flex flex-row items-center justify-between p-5 h-[60px] bg-black rounded-b-lg border border-black">
+        <div className="flex flex-col lg:flex-row gap-5 lg:gap-0 items-center justify-between p-5 lg:h-[60px] bg-black rounded-b-lg border border-black">
           <div className="flex flex-row gap-3 text-white">
             <span className="text-[#727374]">Words</span>
             <span>{formatWithCommas(inputWordsCount)}</span>
