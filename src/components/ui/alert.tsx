@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, ReactNode } from "react";
-import { FaCircleExclamation, FaXmark } from "react-icons/fa6";
+import { FaCircleExclamation, FaXmark, FaCircleCheck } from "react-icons/fa6";
 
 interface AlertProps {
   title: string;
@@ -37,11 +37,11 @@ const AlertProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     info: "bg-blue-100 border border-2 border-blue-200",
   };
 
-  const iconClasses = {
-    success: "text-green-500",
-    error: "text-red-500",
-    warning: "text-yellow-500",
-    info: "text-blue-500",
+  const icon = {
+    success: <FaCircleCheck className={`h-6 w-6 text-green-500`} />,
+    error: <FaCircleExclamation className={`h-6 w-6 text-red-500`} />,
+    warning: <FaCircleExclamation className={`h-6 w-6 text-yellow-500`} />,
+    info: <FaCircleExclamation className={`h-6 w-6 text-blue-500`} />,
   };
 
   return (
@@ -53,9 +53,7 @@ const AlertProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
             className={`flex flex-row relative rounded-xl w-[400px] p-4 text-black ${alertTypeClasses[alert.type]}`}
             role="alert"
           >
-            <div>
-              <FaCircleExclamation className={`h-6 w-6 ${iconClasses[alert.type]}`} />
-            </div>
+            <div>{icon[alert.type]}</div>
             <div>
               <div className="ml-4">
                 <div className="font-bold">{alert.title}</div>
