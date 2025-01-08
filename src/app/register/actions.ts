@@ -64,7 +64,7 @@ export async function registerUser(
 
     return {
       error: false,
-      title: "Registration successful",
+      title: "Registration Successful",
       messages: ["User created successfully"],
       data: user,
       redirect_url: "/login",
