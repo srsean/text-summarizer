@@ -1,22 +1,19 @@
 "use client";
 
 import { summaryText } from "@/app/actions";
-import Button from "@/components/ui/button";
 import useHomeStore from "@/stores/home-store";
 import { formatWithCommas } from "@/utils/format-number";
 
-// @ts-ignore
-import { useFormStatus, useFormState } from "react-dom";
-import { GoPaste } from "react-icons/go";
-import { GrPowerReset } from "react-icons/gr";
-import { RiKeyboardFill } from "react-icons/ri";
-import SubmitButton from "./ui/submit-button";
-import SummarySubmitButton from "./ui/summary-input-buttons";
-import SummaryInputText from "./ui/summary-input-text";
-import SummaryInputButtons from "./ui/summary-input-buttons";
-import { useEffect } from "react";
-import { TextSummaryResponse } from "@/types/text-summary";
+import useHistoryStore from "@/stores/history-store";
 import useSidebarStore from "@/stores/sidebar-store";
+import { TextSummaryResponse } from "@/types/text-summary";
+import { useEffect } from "react";
+// @ts-ignore
+import { useFormState } from "react-dom";
+import { GoPaste } from "react-icons/go";
+import { RiKeyboardFill } from "react-icons/ri";
+import SummaryInputButtons from "./ui/summary-input-buttons";
+import SummaryInputText from "./ui/summary-input-text";
 
 const initialState: TextSummaryResponse = {
   error: false,
@@ -27,15 +24,26 @@ const HomeInput: React.FC = () => {
   const { showMultiText, inputWordsCount, inputCharCount, setMultiText, setInputWords, setOutputWords } = useHomeStore(
     (state) => state
   );
+  const { selectedTextSummary, mode } = useHistoryStore((state) => state);
   const { textSummaryHistoryCount, setTextSummaryHistoryCount } = useSidebarStore((state) => state);
   const [formState, formAction] = useFormState(summaryText, initialState);
 
   useEffect(() => {
     if (formState?.data?.input) {
       setInputWords(formState?.data?.input || "");
-      setTextSummaryHistoryCount(textSummaryHistoryCount + 1);
+      setOutputWords(formState?.data?.output || "");
+      if (!selectedTextSummary) {
+        setTextSummaryHistoryCount(textSummaryHistoryCount + 1);
+      }
     }
   }, [formState]);
+
+  useEffect(() => {
+    if (selectedTextSummary && mode === "edit") {
+      setInputWords(selectedTextSummary.input);
+      setOutputWords(selectedTextSummary.output);
+    }
+  }, [selectedTextSummary, mode]);
 
   const handleEnterText = () => {
     setMultiText(true);
@@ -55,6 +63,9 @@ const HomeInput: React.FC = () => {
       <form action={formAction}>
         <div className="h-[25px] bg-black rounded-t-lg border border-black"></div>
         <div className="flex flex-row items-center justify-center gap-5 h-[140px] bg-white border border-black">
+          {selectedTextSummary && mode === "edit" ? (
+            <input type="text" name="textSummaryId" defaultValue={selectedTextSummary.id} hidden />
+          ) : null}
           {!showMultiText ? (
             <>
               <div

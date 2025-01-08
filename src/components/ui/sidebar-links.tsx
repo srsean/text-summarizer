@@ -11,7 +11,7 @@ const routes = (historyCount: number) => [
   {
     title: "Home",
     icon: <RiHomeSmile2Fill size={15} />,
-    route: "",
+    route: "/",
   },
   {
     title: "History",

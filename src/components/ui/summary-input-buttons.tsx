@@ -7,19 +7,26 @@ import Spinner from "./spinner";
 import Image from "next/image";
 import { GrPowerReset } from "react-icons/gr";
 import useHomeStore from "@/stores/home-store";
+import useHistoryStore from "@/stores/history-store";
 
 const SummaryInputButtons: React.FC = () => {
   const { pending } = useFormStatus();
-  const { showMultiText, setInputWords } = useHomeStore((state) => state);
+  const { showMultiText, setInputWords, setOutputWords } = useHomeStore((state) => state);
+  const { setSelectedTextSummary, setMode } = useHistoryStore((state) => state);
+
+  const reset = () => {
+    setInputWords("");
+    setOutputWords("");
+    setSelectedTextSummary(null);
+    setMode(null);
+  };
 
   return (
     <div className="flex flex-row gap-3">
       {showMultiText && !pending && (
         <button
           className="flex flex-row gap-2 items-center justify-center !w-[100px]  text-white border border-white rounded-xl"
-          onClick={() => {
-            setInputWords("");
-          }}
+          onClick={reset}
         >
           <GrPowerReset className="text-[#FFFFFF52] text-[20px]" />
           Reset
