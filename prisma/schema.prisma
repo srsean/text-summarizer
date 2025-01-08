@@ -27,10 +27,12 @@ model User{
 model TextSummary{
   id Int @id @default(autoincrement())
   input String
-  summary String
+  output String @default("")
   userId Int
-  wordCount Int
-  charCount Int
+  inputWordCount Int @default(0)
+  inputCharCount Int @default(0)
+  outputWordCount Int @default(0)
+  outputCharCount Int @default(0)
   status TextSummaryStatus @default(PENDING)
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
