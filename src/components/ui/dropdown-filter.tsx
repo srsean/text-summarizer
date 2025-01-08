@@ -1,14 +1,16 @@
 "use client";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import { FaCalendar } from "react-icons/fa6";
 
 const filters = [
-  { id: 1, name: "Last 7 days" },
-  { id: 2, name: "Last 30 days" },
-  { id: 3, name: "Today" },
+  { id: 1, name: "Last 7 days", value: "last-7-days" },
+  { id: 2, name: "Last 30 days", value: "last-30-days" },
+  { id: 3, name: "Today", value: "today" },
 ];
 
 const DropdownFilter: React.FC = () => {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState(filters[0]);
 
@@ -30,6 +32,10 @@ const DropdownFilter: React.FC = () => {
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
+
+  useEffect(() => {
+    router.push(`?dateRange=${selectedFilter.value}`);
+  }, [selectedFilter]);
 
   return (
     <div className="relative inline-block text-left" ref={dropdownRef}>
