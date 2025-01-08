@@ -39,6 +39,11 @@ export default async function History({
           <SearchBar />
         </div>
         <div className="flex flex-col flex-grow items-center w-full mb-5">
+          {textSummaryHistory.data?.length === 0 && (
+            <div className="flex flex-col items-center justify-center w-full p-5 mb-2 border border-lg rounded-xl">
+              <span className="text-[14px]">No history found</span>
+            </div>
+          )}
           {textSummaryHistory.data?.map((textSummary) => (
             <div
               key={textSummary.id}
@@ -67,13 +72,16 @@ export default async function History({
         </div>
         <div className="flex flex-row items-center justify-between w-full mb-5">
           <span>
-            Show 1 to {textSummaryHistory.data?.length} of {textSummaryHistory.totalCount} entries
+            Show {textSummaryHistory.data?.length != 0 ? 1 : 0} to {textSummaryHistory.data?.length || 0} of{" "}
+            {textSummaryHistory.totalCount} entries
           </span>
-          <Pagination
-            page={textSummaryHistory.page}
-            pageSize={textSummaryHistory.pageSize}
-            itemsCount={textSummaryHistory.totalCount || 0}
-          />
+          {textSummaryHistory.data?.length != 0 && (
+            <Pagination
+              page={textSummaryHistory.page}
+              pageSize={textSummaryHistory.pageSize}
+              itemsCount={textSummaryHistory.totalCount || 0}
+            />
+          )}
         </div>
       </div>
     </UserLayout>
