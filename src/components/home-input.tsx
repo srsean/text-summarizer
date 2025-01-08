@@ -14,12 +14,23 @@ import SubmitButton from "./ui/submit-button";
 import SummarySubmitButton from "./ui/summary-input-buttons";
 import SummaryInputText from "./ui/summary-input-text";
 import SummaryInputButtons from "./ui/summary-input-buttons";
+import { useEffect } from "react";
+import { TextSummaryResponse } from "@/types/text-summary";
+
+const initialState: TextSummaryResponse = {
+  error: false,
+  messages: [],
+};
 
 const HomeInput: React.FC = () => {
-  const { showMultiText, inputWordsCount, inputCharCount, setMultiText, setInputWords } = useHomeStore(
+  const { showMultiText, inputWordsCount, inputCharCount, setMultiText, setInputWords, setOutputWords } = useHomeStore(
     (state) => state
   );
-  const [formState, formAction] = useFormState(summaryText, {});
+  const [formState, formAction] = useFormState(summaryText, initialState);
+
+  useEffect(() => {
+    setOutputWords(formState?.data?.output || "");
+  }, [formState]);
 
   const handleEnterText = () => {
     setMultiText(true);

@@ -5,9 +5,16 @@ import useHomeStore from "@/stores/home-store";
 import { formatWithCommas } from "@/utils/format-number";
 
 import { RiFileCopy2Fill, RiFileTextLine } from "react-icons/ri";
+import { useAlert } from "./ui/alert";
 
 const HomeOutput: React.FC = () => {
+  const { showAlert } = useAlert();
   const { outputWords, outputWordsCount, outputCharCount } = useHomeStore((state) => state);
+
+  const handleCopyToClipboard = () => {
+    navigator.clipboard.writeText(outputWords);
+    showAlert({ messages: [], type: "success", title: "Copied to Clipboard!" });
+  };
 
   return (
     <>
@@ -29,13 +36,14 @@ const HomeOutput: React.FC = () => {
       <div className="flex flex-row items-center justify-between mt-5">
         <div className="flex flex-row gap-3">
           <span className="text-[#727374] text-[14px]">Words</span>
-          <span className="text-[#727374] text-[14px]">{formatWithCommas(outputWordsCount)}</span>
+          <span className="text-[14px]">{formatWithCommas(outputWordsCount)}</span>
           <span className="text-[#727374] text-[14px]">Characters</span>
-          <span className="text-[#727374] text-[14px]">{formatWithCommas(outputCharCount)}</span>
+          <span className="text-[14px]">{formatWithCommas(outputCharCount)}</span>
         </div>
         <Button
           className="flex flex-row gap-2 !w-[200px] justify-center !bg-[#0A0F2914] !text-black border border-none disabled:!text-[#0A0F2940] disabled:bg-white disabled:border-[#E9EAEC] rounded-xl px-2"
           disabled={outputWordsCount === 0}
+          onClick={handleCopyToClipboard}
         >
           <RiFileCopy2Fill className="text-[20px]" />
           <span>Copy to Clipboard</span>
