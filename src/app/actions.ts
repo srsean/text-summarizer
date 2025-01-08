@@ -1,8 +1,8 @@
 "use server";
 
-import { getSession } from "@/utils/session";
+import { getSession } from "@/helpers/session";
 import { User } from "@prisma/client";
-import prisma from "../utils/db";
+import prisma from "../helpers/db";
 
 export async function getUserData() {
   const session = await getSession();

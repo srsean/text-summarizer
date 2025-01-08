@@ -1,7 +1,7 @@
 "use server";
 
 import { z } from "zod";
-import prisma from "../../utils/db";
+import prisma from "../../helpers/db";
 import { UserRegistrationRequest, UserRegistrationResponse } from "@/types/auth";
 import { redirect } from "next/navigation";
 import bcrypt from "bcrypt";

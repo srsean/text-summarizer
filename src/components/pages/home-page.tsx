@@ -7,7 +7,7 @@ import { RiKeyboardFill } from "react-icons/ri";
 import { GrPowerReset } from "react-icons/gr";
 import { RiFileTextLine } from "react-icons/ri";
 import { RiFileCopy2Fill } from "react-icons/ri";
-import { formatWithCommas } from "@/helpers/format_number";
+import { formatWithCommas } from "@/utils/format_number";
 
 export default function HomePage() {
   const {

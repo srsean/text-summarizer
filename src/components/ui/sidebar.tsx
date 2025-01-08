@@ -5,7 +5,7 @@ import { HiClock } from "react-icons/hi2";
 import { IoMdLogOut } from "react-icons/io";
 
 import Button from "./button";
-import { destroySession } from "@/utils/session";
+import { destroySession } from "@/helpers/session";
 import Link from "next/link";
 import Avatar from "./avatar";
 import { getUserData } from "@/app/actions";

@@ -1,10 +1,10 @@
 "use server";
 
 import { z } from "zod";
-import prisma from "../../utils/db";
+import prisma from "../../helpers/db";
 import { UserLoginRequest, UserLoginResponse } from "@/types/auth";
 import bcrypt from "bcrypt";
-import { createSession } from "@/utils/session";
+import { createSession } from "@/helpers/session";
 
 const schema = z.object({
   username: z.string().nonempty("Username is required"),
