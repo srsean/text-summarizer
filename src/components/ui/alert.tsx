@@ -10,7 +10,7 @@ interface AlertProps {
 }
 
 interface AlertContextProps {
-  showAlert: (alert: AlertProps) => void;
+  showAlert: (alert: AlertProps, autoCloseDuration?: number) => void;
   closeAlert: () => void;
 }
 
@@ -19,8 +19,11 @@ const AlertContext = createContext<AlertContextProps | undefined>(undefined);
 const AlertProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [alert, setAlert] = useState<AlertProps | null>(null);
 
-  const showAlert = (newAlert: AlertProps) => {
+  const showAlert = (newAlert: AlertProps, autoCloseDuration = 3000) => {
     setAlert(newAlert);
+    setTimeout(() => {
+      setAlert(null);
+    }, autoCloseDuration);
   };
 
   const closeAlert = () => {
