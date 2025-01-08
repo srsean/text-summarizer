@@ -53,7 +53,7 @@ const DropdownFilter: React.FC = () => {
       <div>
         <button
           onClick={toggleDropdown}
-          className="inline-flex gap-2 items-center justify-center w-full rounded-xl border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none"
+          className="inline-flex gap-2 items-center lg:justify-center w-full rounded-xl border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none"
         >
           <FaCalendar className="text-gray-400" />
           {selectedFilter.name}
@@ -72,7 +72,7 @@ const DropdownFilter: React.FC = () => {
 
       {isOpen && (
         <div
-          className="origin-top-right absolute left-0 mt-2 w-56 rounded-xl shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+          className="origin-top-right absolute left-0 mt-2 w-56 rounded-xl shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10"
           role="menu"
         >
           {filters.map((filter) => (

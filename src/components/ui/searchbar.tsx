@@ -15,7 +15,7 @@ const SearchBar: React.FC = () => {
   }, 500);
 
   return (
-    <div className="relative w-[400px]">
+    <div className="relative lg:w-[400px]">
       <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
         <CiSearch className="h-5 w-5 text-gray-400" />
       </div>

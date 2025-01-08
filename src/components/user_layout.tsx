@@ -7,9 +7,9 @@ interface UserLayoutProps {
 
 const UserLayout: React.FC<UserLayoutProps> = ({ children }) => {
   return (
-    <div className="flex h-screen">
+    <div className="flex lg:h-screen">
       <Sidebar />
-      <div className="bg-white p-6 w-full h-full">{children}</div>
+      <div className="bg-white p-0 lg:p-6 w-full h-full">{children}</div>
     </div>
   );
 };

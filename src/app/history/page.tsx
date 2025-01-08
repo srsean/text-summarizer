@@ -34,7 +34,7 @@ export default async function History({
           <h1 className="font-bold text-[22px]">History</h1>
           <p className="text-[14px] text-[#0F132499]">View previously summarized texts</p>
         </div>
-        <div className="flex flex-row items-center justify-between w-full mb-5">
+        <div className="flex flex-col lg:flex-row gap-3 lg:items-center lg:justify-between w-full mb-5">
           <DropdownFilter />
           <SearchBar />
         </div>
@@ -53,7 +53,7 @@ export default async function History({
                 <span className="line-clamp-3 overflow-hidden text-ellipsis text-[14px]">{textSummary.output}</span>
                 <SummaryItemActions textSummary={textSummary} />
               </div>
-              <div className="flex flex-row gap-5 w-full">
+              <div className="flex flex-col lg:flex-row gap-5 w-full">
                 <div className="bg-[#E9EAEC] px-3 py-2 text-[#0F132499] text-[14px] inline-flex items-center gap-2 rounded-xl">
                   <FaCalendar className="text-[#0F132499]" />
                   <span>{formatDateTime(textSummary.created_at)}</span>
@@ -70,7 +70,7 @@ export default async function History({
             </div>
           ))}
         </div>
-        <div className="flex flex-row items-center justify-between w-full mb-5">
+        <div className="flex flex-col lg:flex-row gap-5 lg:gap-0 items-center justify-between w-full mb-5">
           <span>
             Show {textSummaryHistory.data?.length != 0 ? 1 : 0} to {textSummaryHistory.data?.length || 0} of{" "}
             {textSummaryHistory.totalCount} entries
