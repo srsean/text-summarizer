@@ -1,4 +1,5 @@
-import "server-only";
+"use server";
+
 import { User } from "@prisma/client";
 import { cookies } from "next/headers";
 import path from "path";
@@ -38,6 +39,18 @@ export async function createSession(user: User) {
   cookies().set(cookie.name, session, { ...cookie.options, expires });
 }
 
+export async function getSession(): Promise<JWTPayload | null> {
+  const session = cookies().get(cookie.name);
+
+  if (!session) {
+    return null;
+  }
+
+  return await decrypt(session.value);
+}
+
 export async function destroySession() {
-  cookies().delete(cookie.name);
+  const cookieStore = cookies();
+  cookieStore.delete("session"); // Adjust the cookie name if needed
+  redirect("/login");
 }
