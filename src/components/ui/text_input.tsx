@@ -16,7 +16,7 @@ const TextInput: React.FC<TextInputProps> = ({ placeholder = "Enter text", name 
         name={name}
         value={text}
         onChange={(e) => setText(e.target.value)}
-        className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-xl"
+        className="text-black w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-xl"
         placeholder={placeholder}
       />
     </div>

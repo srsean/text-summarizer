@@ -22,7 +22,7 @@ const PasswordInput: React.FC<PasswordInputProps> = ({ name, placeholder = "Ente
         name={name}
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-        className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-xl"
+        className="text-black w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-xl"
         placeholder={placeholder}
       />
       <button

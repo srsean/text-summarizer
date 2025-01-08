@@ -4,17 +4,17 @@
 import { useFormState } from "react-dom";
 import Alert, { useAlert } from "./alert";
 import React, { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
-export function Form({
-  action,
-  initialState,
-  children,
-}: {
+type FormProps = {
   action: any;
   initialState: any;
   children: React.ReactNode;
-}) {
+};
+
+export function Form({ action, initialState, children }: FormProps) {
   const { showAlert } = useAlert();
+  const router = useRouter();
 
   const [formState, formAction] = useFormState(action, initialState);
 
@@ -31,6 +31,10 @@ export function Form({
         messages: formState.messages,
         type: "success",
       });
+
+      if (formState.redirect_url) {
+        router.push(formState.redirect_url);
+      }
     }
   }, [formState]);
 
