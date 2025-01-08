@@ -36,7 +36,7 @@ const Sidebar = () => {
       {/* Toggle Button - Visible only on mobile */}
       <button
         onClick={toggleSidebar}
-        className="p-2 fixed top-4 left-4 z-50 bg-gray-800 text-white rounded-full lg:hidden"
+        className="p-2 fixed top-4 right-4 z-50 bg-gray-800 text-white rounded-full lg:hidden"
       >
         {isSidebarOpen ? <IoMdClose size={24} /> : <IoMdMenu size={24} />}
       </button>
