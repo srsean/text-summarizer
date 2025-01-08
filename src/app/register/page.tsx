@@ -1,13 +1,13 @@
 import Button from "@/components/ui/button";
-import PasswordInput from "@/components/ui/password_input";
-import TextInput from "@/components/ui/text_input";
+import PasswordInput from "@/components/ui/password-input";
+import TextInput from "@/components/ui/text-input";
 import Image from "next/image";
 import { registerUser } from "./actions";
 // @ts-ignore
 import { UserRegistrationResponse } from "@/types/auth";
 import Alert from "@/components/ui/alert";
 import { Form } from "@/components/ui/form";
-import SubmitButton from "@/components/ui/submit_button";
+import SubmitButton from "@/components/ui/submit-button";
 
 const initialState: UserRegistrationResponse = {
   error: false,

@@ -3,10 +3,10 @@
 import Button from "@/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
-import PasswordInput from "@/components/ui/password_input";
-import TextInput from "@/components/ui/text_input";
+import PasswordInput from "@/components/ui/password-input";
+import TextInput from "@/components/ui/text-input";
 import { Form } from "@/components/ui/form";
-import SubmitButton from "@/components/ui/submit_button";
+import SubmitButton from "@/components/ui/submit-button";
 import { loginUser } from "./actions";
 import { UserLoginResponse } from "@/types/auth";
 
