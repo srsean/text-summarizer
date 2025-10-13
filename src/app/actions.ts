@@ -1,6 +1,6 @@
 "use server";
 
-import { generateSummary } from "@/helpers/openai";
+import { generateSummary } from "@/helpers/summarizer";
 import { getSession } from "@/helpers/session";
 import { TextSummaryResponse } from "@/types/text-summary";
 import { TextSummaryStatus, User } from "@prisma/client";
