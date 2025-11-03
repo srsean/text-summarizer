@@ -1,16 +1,19 @@
 "use client";
-import { IoMdLogOut, IoMdMenu, IoMdClose } from "react-icons/io";
-import { useEffect, useState } from "react";
 import { getTextSummaryHistoryCount, getUserData } from "@/app/actions";
 import { destroySession } from "@/helpers/session";
+import useSidebarStore from "@/stores/sidebar-store";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { FiLogOut } from "react-icons/fi";
+import { IoMdClose, IoMdMenu } from "react-icons/io";
 import Avatar from "./avatar";
 import Button from "./button";
 import SidebarLinks from "./sidebar-links";
-import useSidebarStore from "@/stores/sidebar-store";
 
 const Sidebar = () => {
-  const { userData, setUserData, setTextSummaryHistoryCount } = useSidebarStore((state) => state);
+  const { userData, setUserData, setTextSummaryHistoryCount } = useSidebarStore(
+    (state) => state
+  );
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
@@ -55,17 +58,21 @@ const Sidebar = () => {
                 <span className="font-semibold text-[14px]">
                   {userData?.firstName} {userData?.lastName}
                 </span>
-                <span className="text-[12px] text-[#FFFFFF99]">{userData?.email}</span>
+                <span className="text-[12px] text-[#FFFFFF99]">
+                  {userData?.email}
+                </span>
               </div>
             </div>
             <form action={destroySession as unknown as string}>
               <button type="submit" className="cursor-pointer text-[#FFFFFF99]">
-                <IoMdLogOut size={20} />
+                <FiLogOut size={20} />
               </button>
             </form>
           </div>
           <Link href="/">
-            <Button className="p-4 bg-white !text-black rounded-xl">+ Summarize Text</Button>
+            <Button className="p-4 bg-white !text-black rounded-xl">
+              + Summarize Text
+            </Button>
           </Link>
         </div>
         <SidebarLinks />
@@ -73,7 +80,10 @@ const Sidebar = () => {
 
       {/* Overlay - Visible only on mobile */}
       {isSidebarOpen && (
-        <div onClick={toggleSidebar} className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"></div>
+        <div
+          onClick={toggleSidebar}
+          className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
+        ></div>
       )}
     </div>
   );
