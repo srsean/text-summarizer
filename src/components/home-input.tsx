@@ -13,6 +13,7 @@ import { GoPaste } from "react-icons/go";
 import { RiKeyboardFill } from "react-icons/ri";
 import SummaryInputButtons from "./ui/summary-input-buttons";
 import SummaryInputText from "./ui/summary-input-text";
+import HomeInputContent from "./home-input-content";
 
 const initialState: TextSummaryResponse = {
   error: false,
@@ -67,7 +68,7 @@ const HomeInput: React.FC = () => {
     <div className="flex flex-col">
       <form action={formAction}>
         <div className="h-[25px] bg-black rounded-t-lg border border-black"></div>
-        <div className="flex flex-row items-center justify-center gap-5 h-[140px] bg-white border border-black">
+        <div className="flex flex-row items-center justify-center gap-5 h-[200px] bg-white border border-black">
           {selectedTextSummary && mode === "edit" ? (
             <input
               type="text"
@@ -98,51 +99,8 @@ const HomeInput: React.FC = () => {
               </div>
             </>
           ) : (
-            <SummaryInputText />
+            <HomeInputContent />
           )}
-        </div>
-
-        {/* 🆕 Tone and Style Selectors */}
-        <div className="flex flex-col lg:flex-row justify-between items-center gap-4 bg-white border-x border-black px-5 py-4">
-          <div className="flex flex-col lg:flex-row gap-5 w-full lg:w-auto">
-            <div className="flex flex-col">
-              <label
-                htmlFor="tone"
-                className="text-[12px] font-semibold text-gray-700 mb-1"
-              >
-                Tone
-              </label>
-              <select
-                id="tone"
-                name="tone"
-                className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black"
-                defaultValue="formal"
-              >
-                <option value="formal">Formal</option>
-                <option value="casual">Casual</option>
-                <option value="friendly">Friendly</option>
-                <option value="professional">Professional</option>
-              </select>
-            </div>
-
-            <div className="flex flex-col">
-              <label
-                htmlFor="style"
-                className="text-[12px] font-semibold text-gray-700 mb-1"
-              >
-                Style
-              </label>
-              <select
-                id="style"
-                name="style"
-                className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black"
-                defaultValue="concise"
-              >
-                <option value="concise">Concise</option>
-                <option value="persuasive">Persuasive</option>
-              </select>
-            </div>
-          </div>
         </div>
 
         <div className="flex flex-col lg:flex-row gap-5 lg:gap-0 items-center justify-between p-5 lg:h-[60px] bg-black rounded-b-lg border border-black">
