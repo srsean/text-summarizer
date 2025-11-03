@@ -3,7 +3,6 @@
 import { summaryText } from "@/app/actions";
 import useHomeStore from "@/stores/home-store";
 import { formatWithCommas } from "@/utils/format-number";
-
 import useHistoryStore from "@/stores/history-store";
 import useSidebarStore from "@/stores/sidebar-store";
 import { TextSummaryResponse } from "@/types/text-summary";
@@ -21,11 +20,17 @@ const initialState: TextSummaryResponse = {
 };
 
 const HomeInput: React.FC = () => {
-  const { showMultiText, inputWordsCount, inputCharCount, setMultiText, setInputWords, setOutputWords } = useHomeStore(
-    (state) => state
-  );
+  const {
+    showMultiText,
+    inputWordsCount,
+    inputCharCount,
+    setMultiText,
+    setInputWords,
+    setOutputWords,
+  } = useHomeStore((state) => state);
   const { selectedTextSummary, mode } = useHistoryStore((state) => state);
-  const { textSummaryHistoryCount, setTextSummaryHistoryCount } = useSidebarStore((state) => state);
+  const { textSummaryHistoryCount, setTextSummaryHistoryCount } =
+    useSidebarStore((state) => state);
   const [formState, formAction] = useFormState(summaryText, initialState);
 
   useEffect(() => {
@@ -64,7 +69,12 @@ const HomeInput: React.FC = () => {
         <div className="h-[25px] bg-black rounded-t-lg border border-black"></div>
         <div className="flex flex-row items-center justify-center gap-5 h-[140px] bg-white border border-black">
           {selectedTextSummary && mode === "edit" ? (
-            <input type="text" name="textSummaryId" defaultValue={selectedTextSummary.id} hidden />
+            <input
+              type="text"
+              name="textSummaryId"
+              defaultValue={selectedTextSummary.id}
+              hidden
+            />
           ) : null}
           {!showMultiText ? (
             <>
@@ -73,20 +83,68 @@ const HomeInput: React.FC = () => {
                 onClick={handleEnterText}
               >
                 <RiKeyboardFill className="text-[#727374] group-hover:text-black text-[20px] m-auto mt-5" />
-                <span className="text-[12px] group-hover:font-bold font-[500]">Enter Text</span>
+                <span className="text-[12px] group-hover:font-bold font-[500]">
+                  Enter Text
+                </span>
               </div>
               <div
                 className="flex flex-col gap-2 items-center justify-center border border-[#DEE0E3] group hover:border-black rounded-xl py-3 px-8 cursor-pointer ease-in-out"
                 onClick={handlePasteText}
               >
                 <GoPaste className="text-[#727374] group-hover:text-black text-[20px] m-auto mt-5" />
-                <span className="text-[12px] group-hover:font-bold font-[500]">Paste Text</span>
+                <span className="text-[12px] group-hover:font-bold font-[500]">
+                  Paste Text
+                </span>
               </div>
             </>
           ) : (
             <SummaryInputText />
           )}
         </div>
+
+        {/* 🆕 Tone and Style Selectors */}
+        <div className="flex flex-col lg:flex-row justify-between items-center gap-4 bg-white border-x border-black px-5 py-4">
+          <div className="flex flex-col lg:flex-row gap-5 w-full lg:w-auto">
+            <div className="flex flex-col">
+              <label
+                htmlFor="tone"
+                className="text-[12px] font-semibold text-gray-700 mb-1"
+              >
+                Tone
+              </label>
+              <select
+                id="tone"
+                name="tone"
+                className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black"
+                defaultValue="formal"
+              >
+                <option value="formal">Formal</option>
+                <option value="casual">Casual</option>
+                <option value="friendly">Friendly</option>
+                <option value="professional">Professional</option>
+              </select>
+            </div>
+
+            <div className="flex flex-col">
+              <label
+                htmlFor="style"
+                className="text-[12px] font-semibold text-gray-700 mb-1"
+              >
+                Style
+              </label>
+              <select
+                id="style"
+                name="style"
+                className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black"
+                defaultValue="concise"
+              >
+                <option value="concise">Concise</option>
+                <option value="persuasive">Persuasive</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
         <div className="flex flex-col lg:flex-row gap-5 lg:gap-0 items-center justify-between p-5 lg:h-[60px] bg-black rounded-b-lg border border-black">
           <div className="flex flex-row gap-3 text-white">
             <span className="text-[#727374]">Words</span>

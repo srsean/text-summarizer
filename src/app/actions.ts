@@ -37,10 +37,20 @@ const schema = z.object({
     .string()
     .transform((val) => (val ? parseInt(val, 10) : undefined))
     .optional(),
+  tone: z
+    .enum(["formal", "casual", "friendly", "professional"])
+    .default("formal"),
+  style: z.enum(["concise", "persuasive"]).default("concise"),
 });
 
-export async function summaryText(prevState: TextSummaryResponse, formData: FormData) {
-  const inputData = Object.fromEntries(formData.entries()) as Record<string, string>;
+export async function summaryText(
+  prevState: TextSummaryResponse,
+  formData: FormData
+) {
+  const inputData = Object.fromEntries(formData.entries()) as Record<
+    string,
+    string
+  >;
   const validatedFields = schema.safeParse(inputData);
 
   if (!validatedFields.success) {
@@ -52,7 +62,10 @@ export async function summaryText(prevState: TextSummaryResponse, formData: Form
   }
 
   const userData = await getUserData();
-  console.log(validatedFields.data.textSummaryId, "validatedFields.data.textSummaryId");
+  console.log(
+    validatedFields.data.textSummaryId,
+    "validatedFields.data.textSummaryId"
+  );
 
   var textSummary;
   if (validatedFields.data.textSummaryId) {
@@ -79,7 +92,11 @@ export async function summaryText(prevState: TextSummaryResponse, formData: Form
     });
   }
 
-  const response = await generateSummary(validatedFields.data.inputWords);
+  const response = await generateSummary(
+    validatedFields.data.inputWords,
+    validatedFields.data.tone,
+    validatedFields.data.style
+  );
 
   const updatedTextSummary = await prisma.textSummary.update({
     where: {
