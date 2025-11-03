@@ -61,42 +61,28 @@ export async function summaryText(
     };
   }
 
+  const { textSummaryId, inputWords, tone, style } = validatedFields.data;
+
   const userData = await getUserData();
-  console.log(
-    validatedFields.data.textSummaryId,
-    "validatedFields.data.textSummaryId"
-  );
 
-  var textSummary;
-  if (validatedFields.data.textSummaryId) {
-    textSummary = await prisma.textSummary.update({
-      where: {
-        id: validatedFields.data.textSummaryId,
-      },
-      data: {
-        input: validatedFields.data.inputWords,
-        inputWordCount: validatedFields.data.inputWords.split(" ").length,
-        inputCharCount: validatedFields.data.inputWords.length,
-        status: TextSummaryStatus.PENDING,
-      },
-    });
-  } else {
-    textSummary = await prisma.textSummary.create({
-      data: {
-        input: validatedFields.data.inputWords,
-        userId: userData?.id as number,
-        inputWordCount: validatedFields.data.inputWords.split(" ").length,
-        inputCharCount: validatedFields.data.inputWords.length,
-        status: TextSummaryStatus.PENDING,
-      },
-    });
-  }
+  const textSummary = await prisma.textSummary.upsert({
+    where: { id: textSummaryId ?? 0 }, // 0 ensures create if undefined
+    update: {
+      input: inputWords,
+      inputWordCount: inputWords.split(" ").length,
+      inputCharCount: inputWords.length,
+      status: TextSummaryStatus.PENDING,
+    },
+    create: {
+      input: inputWords,
+      userId: userData.id,
+      inputWordCount: inputWords.split(" ").length,
+      inputCharCount: inputWords.length,
+      status: TextSummaryStatus.PENDING,
+    },
+  });
 
-  const response = await generateSummary(
-    validatedFields.data.inputWords,
-    validatedFields.data.tone,
-    validatedFields.data.style
-  );
+  const response = await generateSummary(inputWords, tone, style);
 
   const updatedTextSummary = await prisma.textSummary.update({
     where: {
