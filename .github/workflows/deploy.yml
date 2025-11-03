@@ -55,6 +55,7 @@ jobs:
             cd ${{ secrets.PATH }}
             echo "${{ vars.ENV }}" > .env
             npm ci --omit=dev
+            npx prisma generate
             pm2 startOrReload ecosystem.config.js --env production
             pm2 save
 
