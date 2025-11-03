@@ -42,7 +42,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
-          source: ".next, package.json, package-lock.json, public, next.config.ts"
+          source: ".next, package.json, package-lock.json, public, next.config.ts, ecosystem.config.js"
           target: "${{ secrets.PATH }}/"
 
       - name: SSH and deploy
@@ -53,10 +53,9 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             cd ${{ secrets.PATH }}
-            # Write the ENV content into .env file
             echo "${{ vars.ENV }}" > .env
-            npm ci
-            pm2 restart textsummarizer || pm2 start npm --name "textsummarizer" -- start
+            npm ci --omit=dev
+            pm2 startOrReload ecosystem.config.js --env production
             pm2 save
 
 
