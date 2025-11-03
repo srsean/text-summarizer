@@ -1,0 +1,62 @@
+name: Deploy App to DigitalOcean
+
+on:
+  push:
+    branches:
+      - main # deploy only on main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      PORT: ${{ vars.PORT }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Set config script shell
+        run: npm config set script-shell /bin/bash || true
+
+      - name: Install dependencies
+        run: |
+          npm ci
+
+      - name: Build Next.js
+        run: npm run build
+
+      - name: Show All Files
+        run: |
+          /bin/ls -la
+
+      - name: Copy files to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.SSH_KEY }}
+          source: ".next, package.json, package-lock.json, public, next.config.ts"
+          target: "${{ secrets.PATH }}/"
+
+      - name: SSH and deploy
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd ${{ secrets.PATH }}
+            # Write the ENV content into .env file
+            echo "${{ vars.ENV }}" > .env
+            npm ci
+            pm2 restart textsummarizer || pm2 start npm --name "textsummarizer" -- start
+            pm2 save
+
+
