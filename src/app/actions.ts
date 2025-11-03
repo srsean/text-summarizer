@@ -3,7 +3,12 @@
 import { generateSummary } from "@/helpers/summarizer";
 import { getSession } from "@/helpers/session";
 import { TextSummaryResponse } from "@/types/text-summary";
-import { TextSummaryStatus, User } from "@prisma/client";
+import {
+  TextSummaryStatus,
+  TextSummaryStyle,
+  TextSummaryTone,
+  User,
+} from "@prisma/client";
 import { z } from "zod";
 import prisma from "../helpers/db";
 
@@ -71,6 +76,8 @@ export async function summaryText(
       input: inputWords,
       inputWordCount: inputWords.split(" ").length,
       inputCharCount: inputWords.length,
+      tone: tone.toUpperCase() as TextSummaryTone,
+      style: style.toUpperCase() as TextSummaryStyle,
       status: TextSummaryStatus.PENDING,
     },
     create: {
@@ -78,20 +85,29 @@ export async function summaryText(
       userId: userData.id,
       inputWordCount: inputWords.split(" ").length,
       inputCharCount: inputWords.length,
+      tone: tone.toUpperCase() as TextSummaryTone,
+      style: style.toUpperCase() as TextSummaryStyle,
       status: TextSummaryStatus.PENDING,
     },
   });
 
-  const response = await generateSummary(inputWords, tone, style);
+  const { bartSummarization, finalSummary } = await generateSummary(
+    inputWords,
+    tone,
+    style
+  );
 
   const updatedTextSummary = await prisma.textSummary.update({
     where: {
       id: textSummary.id,
     },
     data: {
-      output: response,
-      outputWordCount: response.split(" ").length,
-      outputCharCount: response.length,
+      bartOutput: bartSummarization,
+      bartWordCount: bartSummarization.split(" ").length,
+      bartCharCount: bartSummarization.length,
+      output: finalSummary,
+      outputWordCount: finalSummary.split(" ").length,
+      outputCharCount: finalSummary.length,
       status: TextSummaryStatus.COMPLETED,
     },
   });

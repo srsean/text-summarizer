@@ -28,11 +28,16 @@ model TextSummary{
   id Int @id @default(autoincrement())
   input String
   output String @default("")
+  bartOutput String? @default("") // BART summary output
   userId Int
   inputWordCount Int @default(0)
   inputCharCount Int @default(0)
   outputWordCount Int @default(0)
   outputCharCount Int @default(0)
+  bartWordCount Int? @default(0)
+  bartCharCount Int? @default(0)
+  tone TextSummaryTone @default(FORMAL)
+  style TextSummaryStyle @default(CONCISE)
   status TextSummaryStatus @default(PENDING)
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -44,4 +49,16 @@ enum TextSummaryStatus{
   PENDING
   COMPLETED
   ERROR
+}
+
+enum TextSummaryTone {
+FORMAL
+CASUAL
+FRIENDLY
+PROFESSIONAL
+}
+
+enum TextSummaryStyle {
+CONCISE
+PERSUASIVE
 }

@@ -21,10 +21,16 @@ export async function generateSummary(
 
     const result = await rewriteWithToneAndStyle(summarization, tone, style);
 
-    return result;
+    return {
+      bartSummarization: summarization,
+      finalSummary: result,
+    };
   } catch (error) {
     console.error("Error generating summary:", error);
-    return "";
+    return {
+      bartSummarization: "",
+      finalSummary: "",
+    };
   }
 }
 
