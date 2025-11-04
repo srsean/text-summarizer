@@ -11,6 +11,7 @@ import {
 } from "@prisma/client";
 import { z } from "zod";
 import prisma from "../helpers/db";
+import { headers } from "next/headers";
 
 export async function getUserData() {
   const session = await getSession();
@@ -37,6 +38,7 @@ export async function getTextSummaryHistoryCount() {
 }
 
 const schema = z.object({
+  guest: z.string().optional(),
   inputWords: z.string().nonempty("Input text is required"),
   textSummaryId: z
     .string()
@@ -52,6 +54,12 @@ export async function summaryText(
   prevState: TextSummaryResponse,
   formData: FormData
 ) {
+  const headersList = headers();
+  const ip =
+    headersList.get("x-forwarded-for") ||
+    headersList.get("x-real-ip") ||
+    "unknown";
+
   const inputData = Object.fromEntries(formData.entries()) as Record<
     string,
     string
@@ -66,30 +74,67 @@ export async function summaryText(
     };
   }
 
-  const { textSummaryId, inputWords, tone, style } = validatedFields.data;
+  const { guest, textSummaryId, inputWords, tone, style } =
+    validatedFields.data;
 
-  const userData = await getUserData();
+  // Determine if guest mode
+  const isGuest = guest == "true";
 
-  const textSummary = await prisma.textSummary.upsert({
-    where: { id: textSummaryId ?? 0 }, // 0 ensures create if undefined
-    update: {
-      input: inputWords,
-      inputWordCount: inputWords.split(" ").length,
-      inputCharCount: inputWords.length,
-      tone: tone.toUpperCase() as TextSummaryTone,
-      style: style.toUpperCase() as TextSummaryStyle,
-      status: TextSummaryStatus.PENDING,
-    },
-    create: {
-      input: inputWords,
-      userId: userData.id,
-      inputWordCount: inputWords.split(" ").length,
-      inputCharCount: inputWords.length,
-      tone: tone.toUpperCase() as TextSummaryTone,
-      style: style.toUpperCase() as TextSummaryStyle,
-      status: TextSummaryStatus.PENDING,
-    },
-  });
+  // Handle logged-in user or guest summary creation/updating
+  let textSummary;
+  if (!isGuest) {
+    const userData = await getUserData();
+    textSummary = await prisma.textSummary.upsert({
+      where: { id: textSummaryId ?? 0 }, // 0 ensures create if undefined
+      update: {
+        input: inputWords,
+        inputWordCount: inputWords.split(" ").length,
+        inputCharCount: inputWords.length,
+        tone: tone.toUpperCase() as TextSummaryTone,
+        style: style.toUpperCase() as TextSummaryStyle,
+        status: TextSummaryStatus.PENDING,
+      },
+      create: {
+        input: inputWords,
+        userId: userData.id,
+        inputWordCount: inputWords.split(" ").length,
+        inputCharCount: inputWords.length,
+        tone: tone.toUpperCase() as TextSummaryTone,
+        style: style.toUpperCase() as TextSummaryStyle,
+        status: TextSummaryStatus.PENDING,
+      },
+    });
+  } else {
+    const guestTextSummary = await prisma.textSummary.findFirst({
+      where: {
+        guest: true,
+        ip: ip,
+      },
+    });
+
+    // Limit to one guest summary per IP
+    if (guestTextSummary) {
+      return {
+        error: true,
+        title: "Summary failed",
+        messages: ["Guest users can only create one summary."],
+      };
+    }
+
+    // Create new guest summary
+    textSummary = await prisma.textSummary.create({
+      data: {
+        input: inputWords,
+        inputWordCount: inputWords.split(" ").length,
+        inputCharCount: inputWords.length,
+        tone: tone.toUpperCase() as TextSummaryTone,
+        style: style.toUpperCase() as TextSummaryStyle,
+        status: TextSummaryStatus.PENDING,
+        ip: ip,
+        guest: true,
+      },
+    });
+  }
 
   const { bartSummarization, finalSummary } = await generateSummary(
     inputWords,

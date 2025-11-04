@@ -6,7 +6,7 @@ import { formatWithCommas } from "@/utils/format-number";
 import useHistoryStore from "@/stores/history-store";
 import useSidebarStore from "@/stores/sidebar-store";
 import { TextSummaryResponse } from "@/types/text-summary";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 // @ts-ignore
 import { useFormState } from "react-dom";
 import { GoPaste } from "react-icons/go";
@@ -20,7 +20,11 @@ const initialState: TextSummaryResponse = {
   messages: [],
 };
 
-const HomeInput: React.FC = () => {
+interface HomeInputProps {
+  guest?: string;
+}
+
+const HomeInput: React.FC<HomeInputProps> = ({ guest }) => {
   const {
     showMultiText,
     inputWordsCount,
@@ -34,13 +38,25 @@ const HomeInput: React.FC = () => {
     useSidebarStore((state) => state);
   const [formState, formAction] = useFormState(summaryText, initialState);
 
+  const [alert, setAlert] = useState<{
+    type: "error" | "success";
+    messages: string[];
+  } | null>(null);
+
   useEffect(() => {
-    if (formState?.data?.input) {
+    // If the summary was generated successfully
+    if (formState?.data?.input && !formState.error) {
       setInputWords(formState?.data?.input || "");
       setOutputWords(formState?.data?.output || "");
       if (!selectedTextSummary) {
         setTextSummaryHistoryCount(textSummaryHistoryCount + 1);
       }
+      setAlert({ type: "success", messages: formState.messages });
+    }
+
+    // If there's an error
+    if (formState?.error) {
+      setAlert({ type: "error", messages: formState.messages });
     }
   }, [formState]);
 
@@ -66,9 +82,25 @@ const HomeInput: React.FC = () => {
 
   return (
     <div className="flex flex-col">
+      {alert && (
+        <div
+          className={`p-3 mb-3 text-sm rounded-lg ${
+            alert.type === "error"
+              ? "bg-red-100 text-red-700 border border-red-300"
+              : "bg-green-100 text-green-700 border border-green-300"
+          }`}
+        >
+          {alert.messages.map((msg, idx) => (
+            <p key={idx}>{msg}</p>
+          ))}
+        </div>
+      )}
       <form action={formAction}>
         <div className="h-[25px] bg-black rounded-t-lg border border-black"></div>
         <div className="flex flex-row items-center justify-center gap-5 h-[200px] bg-white border border-black">
+          {guest ? (
+            <input type="text" name="guest" defaultValue={guest} hidden />
+          ) : null}
           {selectedTextSummary && mode === "edit" ? (
             <input
               type="text"

@@ -29,7 +29,7 @@ model TextSummary{
   input String
   output String @default("")
   bartOutput String? @default("") // BART summary output
-  userId Int
+  userId Int? // make userId optional to allow guest submissions
   inputWordCount Int @default(0)
   inputCharCount Int @default(0)
   outputWordCount Int @default(0)
@@ -42,7 +42,11 @@ model TextSummary{
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  user User @relation(fields: [userId], references: [id])
+  // New fields for guest tracking
+  ip               String?           // track guest IP
+  guest            Boolean           @default(false) // mark guest submissions
+
+  user User? @relation(fields: [userId], references: [id])
 }
 
 enum TextSummaryStatus{
