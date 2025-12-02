@@ -12,6 +12,7 @@ import { formatDateTime } from "@/utils/format-datetime";
 import { RxTextAlignLeft } from "react-icons/rx";
 
 import DeleteTextSummaryHistoryModal from "@/components/delete-history-modal";
+import { TextSummaryStatus } from "@prisma/client";
 
 export default async function History({
   params,
@@ -22,9 +23,15 @@ export default async function History({
 }) {
   const page = searchParams?.page ? parseInt(searchParams.page as string) : 1;
   const search = (searchParams?.search ? searchParams.search : "") as string;
-  const dateRange = (searchParams?.dateRange ? searchParams.dateRange : "") as string;
+  const dateRange = (
+    searchParams?.dateRange ? searchParams.dateRange : ""
+  ) as string;
 
-  const textSummaryHistory = await getTextSummaryHistory({ page, search, dateRange });
+  const textSummaryHistory = await getTextSummaryHistory({
+    page,
+    search,
+    dateRange,
+  });
 
   return (
     <UserLayout>
@@ -32,7 +39,9 @@ export default async function History({
       <div className="flex flex-col px-6 py-8 mx-auto lg:py-0 h-full w-full text-black">
         <div className="flex flex-col mb-5">
           <h1 className="font-bold text-[22px]">History</h1>
-          <p className="text-[14px] text-[#0F132499]">View previously summarized texts</p>
+          <p className="text-[14px] text-[#0F132499]">
+            View previously summarized texts
+          </p>
         </div>
         <div className="flex flex-col lg:flex-row gap-3 lg:items-center lg:justify-between w-full mb-5">
           <DropdownFilter />
@@ -47,10 +56,22 @@ export default async function History({
           {textSummaryHistory.data?.map((textSummary) => (
             <div
               key={textSummary.id}
-              className="flex flex-col gap-5 items-center justify-between w-full p-5 mb-2 border border-lg rounded-xl"
+              className={`flex flex-col gap-5 items-center justify-between w-full p-5 mb-2 border rounded-xl ${
+                textSummary.status === TextSummaryStatus.ERROR
+                  ? "border-red-400 bg-red-50"
+                  : "border-lg"
+              }`}
             >
               <div className="flex flex-row w-full justify-between gap-5">
-                <span className="line-clamp-3 overflow-hidden text-ellipsis text-[14px]">{textSummary.output}</span>
+                <span className="line-clamp-3 overflow-hidden text-ellipsis text-[14px]">
+                  {textSummary.output ? (
+                    textSummary.output
+                  ) : (
+                    <span className="text-red-600">
+                      ⚠️ Summary generation failed
+                    </span>
+                  )}
+                </span>
                 <SummaryItemActions textSummary={textSummary} />
               </div>
               <div className="flex flex-col lg:flex-row gap-5 w-full">
@@ -72,7 +93,8 @@ export default async function History({
         </div>
         <div className="flex flex-col lg:flex-row gap-5 lg:gap-0 items-center justify-between w-full mb-5">
           <span>
-            Show {textSummaryHistory.data?.length != 0 ? 1 : 0} to {textSummaryHistory.data?.length || 0} of{" "}
+            Show {textSummaryHistory.data?.length != 0 ? 1 : 0} to{" "}
+            {textSummaryHistory.data?.length || 0} of{" "}
             {textSummaryHistory.totalCount} entries
           </span>
           {textSummaryHistory.data?.length != 0 && (

@@ -1,19 +1,64 @@
 "use client";
-import React, { act, useEffect, useRef, useState } from "react";
+import useHistoryStore from "@/stores/history-store";
+import { TextSummary, TextSummaryStatus } from "@prisma/client";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useRef, useState } from "react";
 import { IoIosMore } from "react-icons/io";
-import { MdEdit } from "react-icons/md";
+import { MdEdit, MdRefresh } from "react-icons/md";
 import { PiTrashFill } from "react-icons/pi";
 import { RiFileCopy2Fill } from "react-icons/ri";
 import { useAlert } from "./alert";
-import { TextSummary } from "@prisma/client";
-import useHistoryStore from "@/stores/history-store";
-import { useRouter } from "next/navigation";
+
+const actionsForErrorStatus = (
+  onClickRetry: () => void,
+  onClickDelete: () => void
+) => [
+  {
+    id: 1,
+    name: "Try Again",
+    icon: <MdRefresh className="h-5 w-5 text-[#0F132499]" />,
+    onClick: onClickRetry,
+  },
+  {
+    id: 2,
+    name: "Delete",
+    icon: <PiTrashFill className="h-5 w-5 text-[#0F132499]" />,
+    onClick: onClickDelete,
+  },
+];
+
+const actionsForNormalStatus = (
+  onClickClipboard: () => void,
+  onClickEdit: () => void,
+  onClickDelete: () => void
+) => [
+  {
+    id: 1,
+    name: "Copy to Clipboard",
+    icon: <RiFileCopy2Fill className="h-5 w-5 text-[#0F132499]" />,
+    onClick: onClickClipboard,
+  },
+  {
+    id: 2,
+    name: "Edit",
+    icon: <MdEdit className="h-5 w-5 text-[#0F132499]" />,
+    onClick: onClickEdit,
+  },
+  {
+    id: 3,
+    name: "Delete",
+    icon: <PiTrashFill className="h-5 w-5 text-[#0F132499]" />,
+    onClick: onClickDelete,
+  },
+];
 
 interface SummaryItemActionsProps {
   textSummary: TextSummary;
 }
 
-const SummaryItemActions: React.FC<SummaryItemActionsProps> = ({ textSummary }) => {
+const SummaryItemActions: React.FC<SummaryItemActionsProps> = ({
+  textSummary,
+}) => {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const { showAlert } = useAlert();
@@ -22,7 +67,10 @@ const SummaryItemActions: React.FC<SummaryItemActionsProps> = ({ textSummary }) 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleClickOutside = (event: MouseEvent) => {
-    if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+    if (
+      dropdownRef.current &&
+      !dropdownRef.current.contains(event.target as Node)
+    ) {
       setIsOpen(false);
     }
   };
@@ -58,16 +106,10 @@ const SummaryItemActions: React.FC<SummaryItemActionsProps> = ({ textSummary }) 
     toggleDropdown();
   };
 
-  const actions = [
-    {
-      id: 1,
-      name: "Copy to Clipboard",
-      icon: <RiFileCopy2Fill className="h-5 w-5 text-[#0F132499]" />,
-      onClick: handleCopyToClipboard,
-    },
-    { id: 2, name: "Edit", icon: <MdEdit className="h-5 w-5 text-[#0F132499]" />, onClick: handleEdit },
-    { id: 3, name: "Delete", icon: <PiTrashFill className="h-5 w-5 text-[#0F132499]" />, onClick: handleDelete },
-  ];
+  const actions =
+    textSummary.status === TextSummaryStatus.ERROR
+      ? actionsForErrorStatus(handleEdit, handleDelete)
+      : actionsForNormalStatus(handleCopyToClipboard, handleEdit, handleDelete);
 
   return (
     <div className="relative inline-block text-left" ref={dropdownRef}>
@@ -86,9 +128,16 @@ const SummaryItemActions: React.FC<SummaryItemActionsProps> = ({ textSummary }) 
           role="menu"
         >
           {actions.map((action) => (
-            <button key={action.id} className="flex items-center w-full hover:bg-gray-100" onClick={action.onClick}>
+            <button
+              key={action.id}
+              className="flex items-center w-full hover:bg-gray-100"
+              onClick={action.onClick}
+            >
               {action.icon}
-              <span className="block px-4 py-2 text-sm text-gray-700 " role="menuitem">
+              <span
+                className="block px-4 py-2 text-sm text-gray-700 "
+                role="menuitem"
+              >
                 {action.name}
               </span>
             </button>
