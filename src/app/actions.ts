@@ -142,6 +142,23 @@ export async function summaryText(
     style
   );
 
+  if (!bartSummarization || !finalSummary) {
+    await prisma.textSummary.update({
+      where: {
+        id: textSummary.id,
+      },
+      data: {
+        status: TextSummaryStatus.ERROR,
+      },
+    });
+
+    return {
+      error: true,
+      title: "Summary failed",
+      messages: ["Failed to generate summary. Please try again."],
+    };
+  }
+
   const updatedTextSummary = await prisma.textSummary.update({
     where: {
       id: textSummary.id,
