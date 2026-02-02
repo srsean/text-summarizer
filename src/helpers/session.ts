@@ -20,12 +20,18 @@ const cookie = {
 };
 
 export async function encrypt(payload: JWTPayload | undefined) {
-  return new SignJWT(payload).setProtectedHeader({ alg: "HS256" }).setIssuedAt().setExpirationTime("1day").sign(key);
+  return new SignJWT(payload)
+    .setProtectedHeader({ alg: "HS256" })
+    .setIssuedAt()
+    .setExpirationTime("1day")
+    .sign(key);
 }
 
 export async function decrypt(session: string) {
   try {
-    const { payload } = await jwtVerify(session, key, { algorithms: ["HS256"] });
+    const { payload } = await jwtVerify(session, key, {
+      algorithms: ["HS256"],
+    });
     return payload;
   } catch (error) {
     return null;
@@ -36,12 +42,13 @@ export async function createSession(user: User) {
   const expires = new Date(Date.now() + cookie.duration);
   const session = await encrypt({ user, expires });
 
-  cookies().set(cookie.name, session, { ...cookie.options, expires });
+  const cookieStore = await cookies();
+  cookieStore.set(cookie.name, session, { ...cookie.options, expires });
 }
 
 export async function getSession(): Promise<JWTPayload | null> {
-  const session = cookies().get(cookie.name);
-
+  const cookieStore = await cookies();
+  const session = cookieStore.get(cookie.name);
   if (!session) {
     return null;
   }
@@ -50,7 +57,7 @@ export async function getSession(): Promise<JWTPayload | null> {
 }
 
 export async function destroySession() {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   cookieStore.delete("session"); // Adjust the cookie name if needed
   redirect("/login");
 }

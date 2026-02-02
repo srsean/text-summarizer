@@ -17,8 +17,12 @@ const initialState = {
 const DeleteTextSummaryHistoryModal: React.FC = () => {
   const { showAlert } = useAlert();
   const router = useRouter();
-  const [formState, formAction] = useFormState(deleteTextSummaryHistory, initialState);
-  const { selectedTextSummary, mode, setMode, setSelectedTextSummary } = useHistoryStore((state) => state);
+  const [formState, formAction] = useFormState(
+    deleteTextSummaryHistory,
+    initialState,
+  );
+  const { selectedTextSummary, mode, setMode, setSelectedTextSummary } =
+    useHistoryStore((state) => state);
 
   const isOpen = (selectedTextSummary && mode === "delete") ?? false;
 
@@ -53,14 +57,23 @@ const DeleteTextSummaryHistoryModal: React.FC = () => {
   return (
     <Modal width="400px" isOpen={isOpen} onClose={onHide}>
       <form action={formAction}>
-        <input type="hidden" name="textSummaryId" value={selectedTextSummary?.id} />
+        <input
+          type="hidden"
+          name="textSummaryId"
+          value={selectedTextSummary?.id}
+        />
         <div className="flex items-start">
           <div>
-            <h3 className="text-base font-semibold text-gray-900" id="modal-title">
+            <h3
+              className="text-base font-semibold text-gray-900"
+              id="modal-title"
+            >
               Delete summarized text?
             </h3>
             <div className="my-2">
-              <p className="text-sm text-gray-500">You will not be able to recover it.</p>
+              <p className="text-sm text-gray-500">
+                You will not be able to recover it.
+              </p>
             </div>
             <div>
               <button

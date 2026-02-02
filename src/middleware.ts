@@ -21,20 +21,26 @@ export async function middleware(request: NextRequest) {
 
   // --- Handle protected routes
   if (isProtectedRoute) {
-    const cookie = cookies().get("session")?.value;
+    const cookieStore = await cookies();
+    const cookie = cookieStore.get("session")?.value;
     if (!cookie) {
-      return NextResponse.redirect(new URL("/login", request.nextUrl).toString());
+      return NextResponse.redirect(
+        new URL("/login", request.nextUrl).toString(),
+      );
     }
 
     const session = await decrypt(cookie);
     if (!session?.user) {
-      return NextResponse.redirect(new URL("/login", request.nextUrl).toString());
+      return NextResponse.redirect(
+        new URL("/login", request.nextUrl).toString(),
+      );
     }
   }
 
   // --- Handle login redirect for already-authenticated users
   if (currentPath === "/login") {
-    const cookie = cookies().get("session")?.value;
+    const cookieStore = await cookies();
+    const cookie = cookieStore.get("session")?.value;
     if (cookie) {
       const session = await decrypt(cookie);
       if (session?.user) {

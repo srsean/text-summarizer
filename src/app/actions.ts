@@ -52,9 +52,9 @@ const schema = z.object({
 
 export async function summaryText(
   prevState: TextSummaryResponse,
-  formData: FormData
+  formData: FormData,
 ) {
-  const headersList = headers();
+  const headersList = await headers();
   const ip =
     headersList.get("x-forwarded-for") ||
     headersList.get("x-real-ip") ||
@@ -139,7 +139,7 @@ export async function summaryText(
   const { bartSummarization, finalSummary } = await generateSummary(
     inputWords,
     tone,
-    style
+    style,
   );
 
   if (!bartSummarization || !finalSummary) {
