@@ -1,6 +1,7 @@
 import DropdownFilter from "@/components/ui/dropdown-filter";
 import Pagination from "@/components/ui/pagination";
 import SearchBar from "@/components/ui/searchbar";
+import SortFilter from "@/components/ui/sort-filter";
 import SummaryItemActions from "@/components/ui/summary-item-actions";
 import UserLayout from "@/components/user_layout";
 import { formatDateTime } from "@/utils/format-datetime";
@@ -28,11 +29,13 @@ export default async function History({
   const search = typeof params.search === "string" ? params.search : "";
   const dateRange =
     typeof params.dateRange === "string" ? params.dateRange : "last-7-days";
+  const sort = params.sort === "asc" ? "asc" : "desc";
 
   const textSummaryHistory = await getTextSummaryHistory({
     page,
     search,
     dateRange,
+    sort,
   });
 
   const items = textSummaryHistory.data ?? [];
@@ -41,6 +44,10 @@ export default async function History({
   const start = items.length > 0 ? (page - 1) * pageSize + 1 : 0;
   const end = items.length > 0 ? start + items.length - 1 : 0;
   const hasSearch = search.trim().length > 0;
+  const clearSearchParams = new URLSearchParams({ dateRange });
+  if (sort === "asc") {
+    clearSearchParams.set("sort", sort);
+  }
 
   return (
     <UserLayout>
@@ -63,7 +70,10 @@ export default async function History({
 
       <div className="mt-8 sm:mt-10">
         <div className="flex flex-col gap-3 border-y border-line py-3.5 sm:flex-row sm:items-center sm:justify-between">
-          <DropdownFilter />
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
+            <DropdownFilter />
+            <SortFilter />
+          </div>
           <SearchBar />
         </div>
 
@@ -83,7 +93,7 @@ export default async function History({
               <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-3">
                 {hasSearch ? (
                   <Link
-                    href={`/history?dateRange=${encodeURIComponent(dateRange)}`}
+                    href={`/history?${clearSearchParams.toString()}`}
                     className="btn-secondary"
                   >
                     Clear search

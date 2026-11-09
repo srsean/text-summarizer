@@ -11,10 +11,11 @@ interface TextSummaryHistoryRequest {
   page?: number;
   dateRange?: "today" | "last-7-days" | "last-30-days" | string;
   search?: string;
+  sort?: "asc" | "desc";
 }
 
 export async function getTextSummaryHistory(request: TextSummaryHistoryRequest): Promise<TextSummariesResponse> {
-  const { page = 1, dateRange, search } = request;
+  const { page = 1, dateRange, search, sort = "desc" } = request;
 
   const pageSize = 4; // You can replace this with the desired page size
 
@@ -50,6 +51,7 @@ export async function getTextSummaryHistory(request: TextSummaryHistoryRequest):
         lte: lteDate,
       },
     },
+    orderBy: [{ created_at: sort }, { id: sort }],
     skip: (page - 1) * pageSize,
     take: pageSize,
   });
