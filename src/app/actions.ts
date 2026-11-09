@@ -1,7 +1,7 @@
 "use server";
 
 import { generateSummary } from "@/helpers/summarizer";
-import { getSession } from "@/helpers/session";
+import { destroySession, getSession } from "@/helpers/session";
 import { TextSummaryResponse } from "@/types/text-summary";
 import {
   TextSummaryStatus,
@@ -25,16 +25,8 @@ export async function getUserData() {
   return userData;
 }
 
-export async function getTextSummaryHistoryCount() {
-  const userData = await getUserData();
-
-  const historyCount = await prisma.textSummary.count({
-    where: {
-      userId: userData?.id as number,
-    },
-  });
-
-  return historyCount;
+export async function logout() {
+  await destroySession();
 }
 
 const schema = z.object({
