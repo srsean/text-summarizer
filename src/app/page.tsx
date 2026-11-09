@@ -1,5 +1,4 @@
-import HomeInput from "@/components/home-input";
-import HomeOutput from "@/components/home-output";
+import SummaryWorkspace from "@/components/summary-workspace";
 import UserLayout from "@/components/user_layout";
 import Link from "next/link";
 
@@ -41,10 +40,7 @@ export default async function Home({
         </div>
       )}
 
-      <div className="grid min-h-0 overflow-hidden rounded-lg border border-line bg-surface lg:h-[calc(100dvh-21rem)] lg:min-h-[520px] lg:max-h-[760px] lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
-        <HomeInput guest={guest} />
-        <HomeOutput />
-      </div>
+      <SummaryWorkspace guest={guest} />
     </UserLayout>
   );
 }
