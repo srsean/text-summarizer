@@ -1,6 +1,7 @@
 "use client";
 
 import useHomeStore from "@/stores/home-store";
+import { STYLE_THEMES } from "@/utils/style-theme";
 import { formatWithCommas } from "@/utils/format-number";
 import { useAlert } from "./ui/alert";
 
@@ -13,6 +14,7 @@ const HomeOutput: React.FC = () => {
     outputTone,
     outputStyle,
   } = useHomeStore((state) => state);
+  const styleTheme = outputStyle ? STYLE_THEMES[outputStyle] : null;
 
   const handleCopyToClipboard = () => {
     navigator.clipboard.writeText(outputWords);
@@ -24,16 +26,24 @@ const HomeOutput: React.FC = () => {
       <div className="flex min-h-[57px] items-center justify-between gap-3 border-b border-line px-5 py-4 sm:px-6">
         <h2 className="eyebrow">Summary</h2>
         {outputWordsCount > 0 && outputTone && outputStyle ? (
-          <p
+          <div
             title="Tone and style used for this summary"
-            className="font-mono text-[10px] uppercase tracking-[0.1em] text-ink-muted"
+            className="flex items-center gap-1.5"
           >
-            {outputTone}
-            <span aria-hidden="true" className="mx-1.5 text-line-strong">
+            <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-ink-muted">
+              {outputTone}
+            </span>
+            <span aria-hidden="true" className="text-line-strong">
               ·
             </span>
-            {outputStyle}
-          </p>
+            <span
+              className={`rounded px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.1em] ${
+                styleTheme ? styleTheme.badgeClass : ""
+              }`}
+            >
+              {outputStyle}
+            </span>
+          </div>
         ) : null}
       </div>
 

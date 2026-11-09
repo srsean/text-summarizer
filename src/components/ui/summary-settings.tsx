@@ -5,6 +5,7 @@ import useHomeStore, {
   SummaryStyle,
   SummaryTone,
 } from "@/stores/home-store";
+import { STYLE_THEMES } from "@/utils/style-theme";
 import { useFormStatus } from "react-dom";
 
 const tones: { value: SummaryTone; label: string }[] = [
@@ -14,15 +15,13 @@ const tones: { value: SummaryTone; label: string }[] = [
   { value: "professional", label: "Professional" },
 ];
 
-const styles: { value: SummaryStyle; label: string }[] = [
-  { value: "concise", label: "Concise" },
-  { value: "persuasive", label: "Persuasive" },
-];
+const styles: SummaryStyle[] = ["concise", "persuasive"];
 
 const SummarySettings: React.FC = () => {
   const { pending } = useFormStatus();
   const { selectedTextSummary } = useHistoryStore((state) => state);
   const { tone, style, setTone, setStyle } = useHomeStore((state) => state);
+  const styleTheme = STYLE_THEMES[style];
   const summaryKey = selectedTextSummary?.id ?? "new";
 
   return (
@@ -54,8 +53,12 @@ const SummarySettings: React.FC = () => {
       <div className="flex items-center gap-1.5 sm:gap-2">
         <label
           htmlFor="style"
-          className="font-mono text-[10px] uppercase tracking-[0.1em] text-ink-muted"
+          className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.1em] text-ink-muted"
         >
+          <span
+            aria-hidden="true"
+            className={`h-1.5 w-1.5 rounded-full ${styleTheme.dotClass}`}
+          />
           Style
         </label>
         <select
@@ -65,13 +68,21 @@ const SummarySettings: React.FC = () => {
           value={style}
           onChange={(event) => setStyle(event.target.value as SummaryStyle)}
           disabled={pending}
-          className="field-select pl-2.5 pr-7 sm:pl-3 sm:pr-8"
+          className={`field-select pl-2.5 pr-7 sm:pl-3 sm:pr-8 ${styleTheme.textClass}`}
         >
-          {styles.map((styleOption) => (
-            <option key={styleOption.value} value={styleOption.value}>
-              {styleOption.label}
-            </option>
-          ))}
+          {styles.map((styleOption) => {
+            const optionTheme = STYLE_THEMES[styleOption];
+
+            return (
+              <option
+                key={styleOption}
+                value={styleOption}
+                style={optionTheme.optionStyle}
+              >
+                {optionTheme.label}
+              </option>
+            );
+          })}
         </select>
       </div>
     </div>

@@ -6,6 +6,7 @@ import SummaryItemActions from "@/components/ui/summary-item-actions";
 import UserLayout from "@/components/user_layout";
 import { formatDateTime } from "@/utils/format-datetime";
 import { formatWithCommas } from "@/utils/format-number";
+import { STYLE_THEMES, type SummaryStyleKey } from "@/utils/style-theme";
 import { TextSummaryStatus } from "@prisma/client";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -110,6 +111,9 @@ export default async function History({
             {items.map((textSummary) => {
               const hasError =
                 textSummary.status === TextSummaryStatus.ERROR;
+              const styleKey =
+                textSummary.style.toLowerCase() as SummaryStyleKey;
+              const styleTheme = STYLE_THEMES[styleKey];
 
               return (
                 <li
@@ -151,7 +155,9 @@ export default async function History({
                           >
                             ·
                           </span>
-                          {textSummary.style}
+                          <span className={`font-medium ${styleTheme.textClass}`}>
+                            {styleTheme.label}
+                          </span>
                         </span>
                         <span
                           aria-hidden="true"
