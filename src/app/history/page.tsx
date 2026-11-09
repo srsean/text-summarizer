@@ -134,6 +134,22 @@ export default async function History({
                           ·
                         </span>
                         <span>
+                          {textSummary.tone}
+                          <span
+                            aria-hidden="true"
+                            className="mx-1.5 text-line-strong"
+                          >
+                            ·
+                          </span>
+                          {textSummary.style}
+                        </span>
+                        <span
+                          aria-hidden="true"
+                          className="hidden text-line-strong sm:inline"
+                        >
+                          ·
+                        </span>
+                        <span>
                           {formatWithCommas(textSummary.outputWordCount)} words
                           <span
                             aria-hidden="true"

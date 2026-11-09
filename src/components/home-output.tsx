@@ -6,9 +6,13 @@ import { useAlert } from "./ui/alert";
 
 const HomeOutput: React.FC = () => {
   const { showAlert } = useAlert();
-  const { outputWords, outputWordsCount, outputCharCount } = useHomeStore(
-    (state) => state
-  );
+  const {
+    outputWords,
+    outputWordsCount,
+    outputCharCount,
+    outputTone,
+    outputStyle,
+  } = useHomeStore((state) => state);
 
   const handleCopyToClipboard = () => {
     navigator.clipboard.writeText(outputWords);
@@ -17,8 +21,20 @@ const HomeOutput: React.FC = () => {
 
   return (
     <section className="flex min-h-[320px] flex-col bg-paper lg:min-h-0">
-      <div className="flex min-h-[57px] items-center justify-between border-b border-line px-5 py-4 sm:px-6">
+      <div className="flex min-h-[57px] items-center justify-between gap-3 border-b border-line px-5 py-4 sm:px-6">
         <h2 className="eyebrow">Summary</h2>
+        {outputWordsCount > 0 && outputTone && outputStyle ? (
+          <p
+            title="Tone and style used for this summary"
+            className="font-mono text-[10px] uppercase tracking-[0.1em] text-ink-muted"
+          >
+            {outputTone}
+            <span aria-hidden="true" className="mx-1.5 text-line-strong">
+              ·
+            </span>
+            {outputStyle}
+          </p>
+        ) : null}
       </div>
 
       {outputWordsCount === 0 ? (

@@ -11,7 +11,9 @@ interface NewSummaryLinkProps {
 
 const NewSummaryLink = ({ className, children }: NewSummaryLinkProps) => {
   const { setSelectedTextSummary, setMode } = useHistoryStore((state) => state);
-  const { setInputWords, setOutputWords } = useHomeStore((state) => state);
+  const { setInputWords, setOutputWords, resetSettings } = useHomeStore(
+    (state) => state
+  );
 
   return (
     <Link
@@ -22,6 +24,7 @@ const NewSummaryLink = ({ className, children }: NewSummaryLinkProps) => {
         setMode(null);
         setInputWords("");
         setOutputWords("");
+        resetSettings();
       }}
     >
       {children}

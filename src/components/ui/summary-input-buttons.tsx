@@ -6,13 +6,19 @@ import useHistoryStore from "@/stores/history-store";
 
 const SummaryInputButtons: React.FC = () => {
   const { pending } = useFormStatus();
-  const { showMultiText, inputWords, setInputWords, setOutputWords } =
-    useHomeStore((state) => state);
+  const {
+    showMultiText,
+    inputWords,
+    setInputWords,
+    setOutputWords,
+    resetSettings,
+  } = useHomeStore((state) => state);
   const { setSelectedTextSummary, setMode } = useHistoryStore((state) => state);
 
   const reset = () => {
     setInputWords("");
     setOutputWords("");
+    resetSettings();
     setSelectedTextSummary(null);
     setMode(null);
   };

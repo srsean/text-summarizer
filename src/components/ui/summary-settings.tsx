@@ -1,24 +1,28 @@
 "use client";
 
 import useHistoryStore from "@/stores/history-store";
+import useHomeStore, {
+  SummaryStyle,
+  SummaryTone,
+} from "@/stores/home-store";
 import { useFormStatus } from "react-dom";
 
-const tones = [
+const tones: { value: SummaryTone; label: string }[] = [
   { value: "formal", label: "Formal" },
   { value: "casual", label: "Casual" },
   { value: "friendly", label: "Friendly" },
   { value: "professional", label: "Professional" },
 ];
 
-const styles = [
+const styles: { value: SummaryStyle; label: string }[] = [
   { value: "concise", label: "Concise" },
   { value: "persuasive", label: "Persuasive" },
 ];
 
 const SummarySettings: React.FC = () => {
   const { pending } = useFormStatus();
-  const { selectedTextSummary, mode } = useHistoryStore((state) => state);
-  const isEditing = Boolean(selectedTextSummary && mode === "edit");
+  const { selectedTextSummary } = useHistoryStore((state) => state);
+  const { tone, style, setTone, setStyle } = useHomeStore((state) => state);
   const summaryKey = selectedTextSummary?.id ?? "new";
 
   return (
@@ -34,15 +38,14 @@ const SummarySettings: React.FC = () => {
           key={`tone-${summaryKey}`}
           id="tone"
           name="tone"
-          defaultValue={
-            isEditing ? selectedTextSummary?.tone.toLowerCase() : "formal"
-          }
+          value={tone}
+          onChange={(event) => setTone(event.target.value as SummaryTone)}
           disabled={pending}
           className="field-select pl-2.5 pr-7 sm:pl-3 sm:pr-8"
         >
-          {tones.map((tone) => (
-            <option key={tone.value} value={tone.value}>
-              {tone.label}
+          {tones.map((toneOption) => (
+            <option key={toneOption.value} value={toneOption.value}>
+              {toneOption.label}
             </option>
           ))}
         </select>
@@ -59,15 +62,14 @@ const SummarySettings: React.FC = () => {
           key={`style-${summaryKey}`}
           id="style"
           name="style"
-          defaultValue={
-            isEditing ? selectedTextSummary?.style.toLowerCase() : "concise"
-          }
+          value={style}
+          onChange={(event) => setStyle(event.target.value as SummaryStyle)}
           disabled={pending}
           className="field-select pl-2.5 pr-7 sm:pl-3 sm:pr-8"
         >
-          {styles.map((style) => (
-            <option key={style.value} value={style.value}>
-              {style.label}
+          {styles.map((styleOption) => (
+            <option key={styleOption.value} value={styleOption.value}>
+              {styleOption.label}
             </option>
           ))}
         </select>

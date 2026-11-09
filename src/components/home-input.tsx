@@ -1,7 +1,10 @@
 "use client";
 
 import { summaryText } from "@/app/actions";
-import useHomeStore from "@/stores/home-store";
+import useHomeStore, {
+  SummaryStyle,
+  SummaryTone,
+} from "@/stores/home-store";
 import { formatWithCommas } from "@/utils/format-number";
 import useHistoryStore from "@/stores/history-store";
 import { TextSummaryResponse } from "@/types/text-summary";
@@ -29,6 +32,9 @@ const HomeInput: React.FC<HomeInputProps> = ({ guest }) => {
     setMultiText,
     setInputWords,
     setOutputWords,
+    setTone,
+    setStyle,
+    setOutputSettings,
   } = useHomeStore((state) => state);
   const { selectedTextSummary, mode } = useHistoryStore((state) => state);
   const [formState, formAction] = useActionState<
@@ -47,8 +53,15 @@ const HomeInput: React.FC<HomeInputProps> = ({ guest }) => {
 
   useEffect(() => {
     if (formState?.data?.input && !formState.error) {
-      setInputWords(formState?.data?.input || "");
-      setOutputWords(formState?.data?.output || "");
+      const { input, output, tone, style } = formState.data;
+      const resultTone = tone.toLowerCase() as SummaryTone;
+      const resultStyle = style.toLowerCase() as SummaryStyle;
+
+      setInputWords(input || "");
+      setOutputWords(output || "");
+      setTone(resultTone);
+      setStyle(resultStyle);
+      setOutputSettings(resultTone, resultStyle);
       setAlert({ type: "success", messages: formState.messages });
     }
 
@@ -59,8 +72,14 @@ const HomeInput: React.FC<HomeInputProps> = ({ guest }) => {
 
   useEffect(() => {
     if (selectedTextSummary && mode === "edit") {
+      const resultTone = selectedTextSummary.tone.toLowerCase() as SummaryTone;
+      const resultStyle = selectedTextSummary.style.toLowerCase() as SummaryStyle;
+
       setInputWords(selectedTextSummary.input);
       setOutputWords(selectedTextSummary.output);
+      setTone(resultTone);
+      setStyle(resultStyle);
+      setOutputSettings(resultTone, resultStyle);
     }
   }, [selectedTextSummary, mode]);
 
