@@ -38,7 +38,7 @@ const SummaryWorkspace: React.FC<SummaryWorkspaceProps> = ({ guest }) => {
 
   useEffect(() => {
     if (formState?.data?.input && !formState.error) {
-      const { input, output, tone, style } = formState.data;
+      const { input, output, tone, style, styleHighlights } = formState.data;
       const resultTone = tone.toLowerCase() as SummaryTone;
       const resultStyle = style.toLowerCase() as SummaryStyle;
 
@@ -46,7 +46,7 @@ const SummaryWorkspace: React.FC<SummaryWorkspaceProps> = ({ guest }) => {
       setOutputWords(output || "");
       setTone(resultTone);
       setStyle(resultStyle);
-      setOutputSettings(resultTone, resultStyle);
+      setOutputSettings(resultTone, resultStyle, styleHighlights ?? []);
       setAlert({ type: "success", messages: formState.messages });
     }
 

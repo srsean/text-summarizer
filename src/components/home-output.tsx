@@ -4,6 +4,7 @@ import useHomeStore from "@/stores/home-store";
 import { STYLE_THEMES } from "@/utils/style-theme";
 import { formatWithCommas } from "@/utils/format-number";
 import { useAlert } from "./ui/alert";
+import HighlightedText from "./ui/highlighted-text";
 
 const HomeOutput: React.FC = () => {
   const { showAlert } = useAlert();
@@ -13,6 +14,7 @@ const HomeOutput: React.FC = () => {
     outputCharCount,
     outputTone,
     outputStyle,
+    outputHighlights,
   } = useHomeStore((state) => state);
   const styleTheme = outputStyle ? STYLE_THEMES[outputStyle] : null;
 
@@ -68,7 +70,15 @@ const HomeOutput: React.FC = () => {
             aria-label="Generated summary"
             className="whitespace-pre-wrap break-words font-serif text-[17px] leading-[1.75] text-ink"
           >
-            {outputWords}
+            {outputStyle ? (
+              <HighlightedText
+                text={outputWords}
+                highlights={outputHighlights}
+                style={outputStyle}
+              />
+            ) : (
+              outputWords
+            )}
           </div>
         </div>
       )}

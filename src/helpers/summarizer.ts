@@ -5,6 +5,7 @@ const DEFAULT_GEMINI_MODEL = "gemini-3.5-flash-lite";
 type SummaryResult = {
   summary: string;
   rewritten: string;
+  styleHighlights: string[];
 };
 
 type GeminiChatResponse = {
@@ -21,8 +22,14 @@ Given a block of text, do two things:
 1. Write a faithful summary. Keep the most important facts, names, numbers, and conclusions. Do not invent details. Aim for roughly 15-25% of the original length and no more than 250 words.
 2. Rewrite that summary in the requested tone and style. Remove every URL or link. Keep the meaning unchanged.
 
-Return only a JSON object with exactly these two string keys:
-{"summary":"...","rewritten":"..."}
+Then choose the words that show the requested style:
+- If the style is concise, choose the core factual terms that make the summary compact.
+- If the style is persuasive, choose the words or phrases that persuade, evaluate, or add emphasis.
+
+Each style highlight must be an exact substring of the rewritten summary, 1-4 words long. Choose at most 8 highlights, with no duplicates.
+
+Return only a JSON object with exactly these three keys:
+{"summary":"...","rewritten":"...","styleHighlights":["..."]}
 
 Do not wrap the JSON in markdown or code fences.`;
 
@@ -52,9 +59,36 @@ function parseSummaryResult(content: string): SummaryResult {
       typeof parsed.summary === "string" &&
       typeof parsed.rewritten === "string"
     ) {
+      const summary = parsed.summary.trim();
+      const rewritten = parsed.rewritten.trim();
+      const styleHighlights = Array.isArray(parsed.styleHighlights)
+        ? parsed.styleHighlights
+            .filter((highlight): highlight is string => {
+              return typeof highlight === "string";
+            })
+            .map((highlight) => highlight.trim())
+            .filter((highlight) => {
+              return (
+                highlight.length > 0 &&
+                rewritten.toLowerCase().includes(highlight.toLowerCase())
+              );
+            })
+            .filter((highlight, index, highlights) => {
+              return (
+                highlights.findIndex(
+                  (other) =>
+                    other.toLowerCase() === highlight.toLowerCase()
+                ) === index
+              );
+            })
+            .sort((a, b) => b.length - a.length)
+            .slice(0, 8)
+        : [];
+
       return {
-        summary: parsed.summary.trim(),
-        rewritten: parsed.rewritten.trim(),
+        summary,
+        rewritten,
+        styleHighlights,
       };
     }
   } catch {
@@ -66,6 +100,7 @@ function parseSummaryResult(content: string): SummaryResult {
   return {
     summary: cleaned,
     rewritten: cleaned,
+    styleHighlights: [],
   };
 }
 
@@ -122,18 +157,24 @@ export async function generateSummary(
   style: "concise" | "persuasive" = "concise"
 ) {
   try {
-    const { summary, rewritten } = await summarizeWithGemini(text, tone, style);
+    const { summary, rewritten, styleHighlights } = await summarizeWithGemini(
+      text,
+      tone,
+      style
+    );
 
     return {
       // Kept for compatibility with the existing database/UI field names.
       bartSummarization: summary,
       finalSummary: rewritten,
+      styleHighlights,
     };
   } catch (error) {
     console.error("Error generating summary with Gemini:", error);
     return {
       bartSummarization: "",
       finalSummary: "",
+      styleHighlights: [],
     };
   }
 }

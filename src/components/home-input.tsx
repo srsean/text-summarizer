@@ -45,7 +45,11 @@ const HomeInput: React.FC<HomeInputProps> = ({ guest, formAction }) => {
       setOutputWords(selectedTextSummary.output);
       setTone(resultTone);
       setStyle(resultStyle);
-      setOutputSettings(resultTone, resultStyle);
+      setOutputSettings(
+        resultTone,
+        resultStyle,
+        selectedTextSummary.styleHighlights ?? []
+      );
     }
   }, [selectedTextSummary, mode]);
 

@@ -28,6 +28,7 @@ model TextSummary{
   id Int @id @default(autoincrement())
   input String
   output String @default("")
+  styleHighlights String[] @default([]) // Style-relevant phrases from output
   bartOutput String? @default("") // BART summary output
   userId Int? // make userId optional to allow guest submissions
   inputWordCount Int @default(0)

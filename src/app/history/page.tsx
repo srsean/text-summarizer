@@ -1,4 +1,5 @@
 import DropdownFilter from "@/components/ui/dropdown-filter";
+import HighlightedText from "@/components/ui/highlighted-text";
 import Pagination from "@/components/ui/pagination";
 import SearchBar from "@/components/ui/searchbar";
 import SortFilter from "@/components/ui/sort-filter";
@@ -133,7 +134,11 @@ export default async function History({
                         </div>
                       ) : (
                         <p className="line-clamp-2 font-serif text-[16.5px] leading-[1.6] text-ink">
-                          {textSummary.output}
+                          <HighlightedText
+                            text={textSummary.output}
+                            highlights={textSummary.styleHighlights}
+                            style={styleKey}
+                          />
                         </p>
                       )}
 

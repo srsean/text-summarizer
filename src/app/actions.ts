@@ -128,11 +128,8 @@ export async function summaryText(
     });
   }
 
-  const { bartSummarization, finalSummary } = await generateSummary(
-    inputWords,
-    tone,
-    style,
-  );
+  const { bartSummarization, finalSummary, styleHighlights } =
+    await generateSummary(inputWords, tone, style);
 
   if (!bartSummarization || !finalSummary) {
     await prisma.textSummary.update({
@@ -160,6 +157,7 @@ export async function summaryText(
       bartWordCount: bartSummarization.split(" ").length,
       bartCharCount: bartSummarization.length,
       output: finalSummary,
+      styleHighlights,
       outputWordCount: finalSummary.split(" ").length,
       outputCharCount: finalSummary.length,
       status: TextSummaryStatus.COMPLETED,

@@ -19,12 +19,17 @@ interface HomeState {
   // Settings that produced the summary currently on screen.
   outputTone: SummaryTone | null;
   outputStyle: SummaryStyle | null;
+  outputHighlights: string[];
   setMultiText: (show: boolean) => void;
   setInputWords: (words: string) => void;
   setOutputWords: (words: string) => void;
   setTone: (tone: SummaryTone) => void;
   setStyle: (style: SummaryStyle) => void;
-  setOutputSettings: (tone: SummaryTone, style: SummaryStyle) => void;
+  setOutputSettings: (
+    tone: SummaryTone,
+    style: SummaryStyle,
+    highlights: string[]
+  ) => void;
   resetSettings: () => void;
 }
 
@@ -46,6 +51,7 @@ const useHomeStore = create<HomeState>()(
       style: DEFAULT_STYLE,
       outputTone: null,
       outputStyle: null,
+      outputHighlights: [],
       // actions
       setMultiText: (show) => {
         set({ showMultiText: show });
@@ -63,14 +69,19 @@ const useHomeStore = create<HomeState>()(
       },
       setTone: (tone) => set({ tone }),
       setStyle: (style) => set({ style }),
-      setOutputSettings: (tone, style) =>
-        set({ outputTone: tone, outputStyle: style }),
+      setOutputSettings: (tone, style, highlights) =>
+        set({
+          outputTone: tone,
+          outputStyle: style,
+          outputHighlights: Array.isArray(highlights) ? highlights : [],
+        }),
       resetSettings: () =>
         set({
           tone: DEFAULT_TONE,
           style: DEFAULT_STYLE,
           outputTone: null,
           outputStyle: null,
+          outputHighlights: [],
         }),
     }),
     {
