@@ -2,22 +2,27 @@
 
 import React from "react";
 import { useFormStatus } from "react-dom";
-import Spinner from "./spinner";
-import Image from "next/image";
 import useHomeStore from "@/stores/home-store";
 
-const SummaryInputText: React.FC = () => {
+interface SummaryInputTextProps {
+  autoFocus?: boolean;
+}
+
+const SummaryInputText: React.FC<SummaryInputTextProps> = ({ autoFocus }) => {
   const { pending } = useFormStatus();
   const { inputWords, setInputWords } = useHomeStore((state) => state);
 
   return (
     <textarea
       name="inputWords"
-      rows={4}
       value={inputWords}
       onChange={(e) => setInputWords(e.target.value)}
-      className="resize-none text-black h-full w-full px-4 py-2 border focus:outline-none focus:ring-0"
+      aria-label="Source text"
+      placeholder="Paste or type your text here…"
+      autoFocus={autoFocus}
+      className="h-full min-h-[280px] w-full flex-1 resize-none border-0 bg-transparent px-5 py-5 text-[14.5px] leading-[1.75] text-ink outline-none placeholder:text-ink-muted/80 disabled:opacity-60 sm:px-6"
       disabled={pending}
+      spellCheck
     />
   );
 };

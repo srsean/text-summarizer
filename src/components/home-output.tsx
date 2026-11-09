@@ -1,55 +1,70 @@
 "use client";
 
-import Button from "@/components/ui/button";
 import useHomeStore from "@/stores/home-store";
 import { formatWithCommas } from "@/utils/format-number";
-
-import { RiFileCopy2Fill, RiFileTextLine } from "react-icons/ri";
 import { useAlert } from "./ui/alert";
 
 const HomeOutput: React.FC = () => {
   const { showAlert } = useAlert();
-  const { outputWords, outputWordsCount, outputCharCount } = useHomeStore((state) => state);
+  const { outputWords, outputWordsCount, outputCharCount } = useHomeStore(
+    (state) => state
+  );
 
   const handleCopyToClipboard = () => {
     navigator.clipboard.writeText(outputWords);
-    showAlert({ messages: [], type: "success", title: "Copied to Clipboard!" });
+    showAlert({ messages: [], type: "success", title: "Copied to clipboard" });
   };
 
   return (
-    <>
-      <div className="bg-[#F7F7F8] min-h-[200px] lg:p-0 flex flex-col flex-grow items-center justify-center w-full mt-5 rounded-xl border border-[#0A0F2914]">
-        {outputWordsCount === 0 ? (
-          <div className="px-4 py-2 ">
-            <RiFileTextLine className="text-[#0F132499] text-[50px]" />
-            <span className="text-[#0F132499] text-[18px] mt-5">Your summarized text will appear here</span>
+    <section className="flex min-h-[320px] flex-col bg-paper lg:min-h-0">
+      <div className="flex min-h-[57px] items-center justify-between border-b border-line px-5 py-4 sm:px-6">
+        <h2 className="eyebrow">Summary</h2>
+      </div>
+
+      {outputWordsCount === 0 ? (
+        <div className="flex flex-1 items-center justify-center px-6 py-12">
+          <div className="max-w-[30ch] text-center">
+            <p className="font-serif text-[22px] leading-[1.3] text-ink-soft">
+              Your summary will appear here.
+            </p>
+            <p className="mt-2.5 text-[12.5px] leading-relaxed text-ink-muted">
+              It keeps the key facts and leaves the rest behind.
+            </p>
           </div>
-        ) : (
-          <textarea
-            rows={4}
-            value={outputWords}
-            disabled
-            className="flex-grow resize-none text-black h-full w-full px-4 py-2 border focus:outline-none focus:ring-0 disabled:bg-[#F7F7F8] disabled:!text-black"
-          />
-        )}
-      </div>
-      <div className="flex flex-col gap-5 lg:gap-0 lg:flex-row items-center justify-between mt-5">
-        <div className="flex flex-row gap-3">
-          <span className="text-[#727374] text-[14px]">Words</span>
-          <span className="text-[14px]">{formatWithCommas(outputWordsCount)}</span>
-          <span className="text-[#727374] text-[14px]">Characters</span>
-          <span className="text-[14px]">{formatWithCommas(outputCharCount)}</span>
         </div>
-        <Button
-          className="flex flex-row gap-2 !w-[200px] justify-center !bg-[#0A0F2914] !text-black border border-none disabled:!text-[#0A0F2940] disabled:bg-white disabled:border-[#E9EAEC] rounded-xl px-2"
-          disabled={outputWordsCount === 0}
-          onClick={handleCopyToClipboard}
+      ) : (
+        <div
+          className="fade-in flex-1 overflow-y-auto px-5 py-5 sm:px-6"
+          aria-live="polite"
         >
-          <RiFileCopy2Fill className="text-[20px]" />
-          <span>Copy to Clipboard</span>
-        </Button>
+          <div
+            role="region"
+            aria-label="Generated summary"
+            className="whitespace-pre-wrap break-words font-serif text-[17px] leading-[1.75] text-ink"
+          >
+            {outputWords}
+          </div>
+        </div>
+      )}
+
+      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-line px-5 py-4 sm:px-6">
+        <p className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-ink-muted">
+          {formatWithCommas(outputWordsCount)} words
+          <span aria-hidden="true" className="mx-2 text-line-strong">
+            /
+          </span>
+          {formatWithCommas(outputCharCount)} characters
+        </p>
+        <button
+          type="button"
+          onClick={handleCopyToClipboard}
+          disabled={outputWordsCount === 0}
+          className="btn-secondary h-9 w-full px-3.5 sm:w-auto"
+        >
+          Copy summary
+        </button>
       </div>
-    </>
+    </section>
   );
 };
 
