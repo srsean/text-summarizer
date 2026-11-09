@@ -2,48 +2,144 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #f4f1ea;
+    --foreground: #1d1b17;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-paper font-sans text-ink antialiased;
+    background: var(--background);
+    color: var(--foreground);
+  }
+
+  ::selection {
+    background: #d8dfe6;
+    color: #1d1b17;
+  }
+
+  :focus-visible {
+    outline: none;
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-}
+@layer components {
+  .eyebrow {
+    @apply font-mono text-[10.5px] font-medium uppercase tracking-[0.14em] text-ink-muted;
+  }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+  .field-label {
+    @apply mb-1.5 block text-[12px] font-medium text-ink-soft;
+  }
+
+  .field-input {
+    @apply block h-11 w-full rounded-md border border-line bg-surface px-3.5 text-[14px] text-ink placeholder:text-ink-muted/80 transition-colors focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent;
+  }
+
+  .field-select {
+    @apply h-9 appearance-none rounded-md border border-line bg-surface pl-3 pr-8 text-[12.5px] text-ink transition-colors focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236A645B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-position: right 0.7rem center;
+    background-repeat: no-repeat;
+    background-size: 12px;
+  }
+
+  .btn-primary {
+    @apply inline-flex h-10 items-center justify-center gap-2 rounded-md bg-ink px-5 text-[13px] font-medium text-paper transition-colors hover:bg-ink-soft focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-paper disabled:cursor-not-allowed disabled:bg-line-strong disabled:text-ink-muted;
+  }
+
+  .btn-secondary {
+    @apply inline-flex h-10 items-center justify-center gap-2 rounded-md border border-line bg-surface px-4 text-[13px] font-medium text-ink transition-colors hover:border-line-strong hover:bg-paper focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-paper disabled:cursor-not-allowed disabled:border-line disabled:bg-transparent disabled:text-ink-muted disabled:opacity-60;
+  }
+
+  .btn-quiet {
+    @apply inline-flex h-9 items-center justify-center rounded-md px-2 text-[13px] font-medium text-ink-muted transition-colors hover:text-ink focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-paper disabled:cursor-not-allowed disabled:text-ink-muted/50;
+  }
+
+  .btn-danger {
+    @apply inline-flex h-10 items-center justify-center gap-2 rounded-md bg-error px-4 text-[13px] font-medium text-white transition-colors hover:bg-[#8f3025] focus-visible:ring-2 focus-visible:ring-error focus-visible:ring-offset-2 focus-visible:ring-offset-paper disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  .link-underline {
+    @apply text-ink underline decoration-line-strong decoration-1 underline-offset-4 transition-colors hover:decoration-ink;
+  }
+
+  .spinner {
+    width: 14px;
+    height: 14px;
+    border: 1.5px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 9999px;
+    animation: spin 0.75s linear infinite;
   }
 }
 
-/* width */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.toast-enter {
+  animation: toast-in 0.16s ease-out;
+}
+
+.fade-in {
+  animation: fade-in 0.24s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast-enter,
+  .fade-in,
+  .spinner {
+    animation: none;
+  }
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #c6beaf transparent;
+}
+
 ::-webkit-scrollbar {
-  width: 5px;
+  width: 8px;
+  height: 8px;
 }
 
-/* Track */
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 
-/* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #1F2228;
-  border-radius: 5px; 
-  height: 64px;
+  background: #c6beaf;
+  border-radius: 8px;
 }
 
-/* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #1F2228;
+  background: #a89f8e;
 }

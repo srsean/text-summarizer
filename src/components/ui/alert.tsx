@@ -1,7 +1,13 @@
 "use client";
 
-import React, { createContext, useContext, useState, ReactNode } from "react";
-import { FaCircleExclamation, FaXmark, FaCircleCheck } from "react-icons/fa6";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  ReactNode,
+} from "react";
 
 interface AlertProps {
   title: string;
@@ -16,63 +22,76 @@ interface AlertContextProps {
 
 const AlertContext = createContext<AlertContextProps | undefined>(undefined);
 
+const dotClasses: Record<AlertProps["type"], string> = {
+  success: "bg-success",
+  error: "bg-error",
+  warning: "bg-warn",
+  info: "bg-accent",
+};
+
 const AlertProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [alert, setAlert] = useState<AlertProps | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const showAlert = (newAlert: AlertProps, autoCloseDuration = 3000) => {
-    setAlert(newAlert);
-    setTimeout(() => {
-      setAlert(null);
-    }, autoCloseDuration);
+  const clearTimer = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
   };
 
   const closeAlert = () => {
+    clearTimer();
     setAlert(null);
   };
 
-  const alertTypeClasses = {
-    success: "bg-green-100 border border-2 border-green-200",
-    error: "bg-red-100 border border-2 border-red-200",
-    warning: "bg-yellow-100 border border-2 border-yellow-200",
-    info: "bg-blue-100 border border-2 border-blue-200",
+  const showAlert = (newAlert: AlertProps, autoCloseDuration?: number) => {
+    clearTimer();
+    setAlert(newAlert);
+    const duration =
+      autoCloseDuration ?? (newAlert.type === "error" ? 6000 : 3200);
+    timeoutRef.current = setTimeout(() => {
+      setAlert(null);
+      timeoutRef.current = null;
+    }, duration);
   };
 
-  const icon = {
-    success: <FaCircleCheck className={`h-6 w-6 text-green-500`} />,
-    error: <FaCircleExclamation className={`h-6 w-6 text-red-500`} />,
-    warning: <FaCircleExclamation className={`h-6 w-6 text-yellow-500`} />,
-    info: <FaCircleExclamation className={`h-6 w-6 text-blue-500`} />,
-  };
+  useEffect(() => clearTimer, []);
 
   return (
     <AlertContext.Provider value={{ showAlert, closeAlert }}>
       {children}
       {alert && (
-        <div className={`fixed top-4 left-1/2 transform -translate-x-1/2 z-50`}>
-          <div
-            className={`flex flex-row relative rounded-xl w-[400px] p-4 text-black ${alertTypeClasses[alert.type]}`}
-            role="alert"
-          >
-            <div>{icon[alert.type]}</div>
-            <div>
-              <div className="ml-4">
-                <div className="font-bold">{alert.title}</div>
-                {alert.messages.length > 1 ? (
-                  <ul className="list-disc list-inside text-[#0F132499]">
-                    {alert.messages.map((message, index) => (
-                      <li key={index}>{message}</li>
-                    ))}
-                  </ul>
-                ) : (
-                  <div>{alert.messages[0]}</div>
-                )}
-              </div>
+        <div
+          role={alert.type === "error" ? "alert" : "status"}
+          aria-live={alert.type === "error" ? "assertive" : "polite"}
+          aria-atomic="true"
+          className="fixed inset-x-4 bottom-4 z-[70] sm:inset-x-auto sm:bottom-6 sm:right-6 sm:w-[380px]"
+        >
+          <div className="toast-enter flex items-start gap-3 rounded-md border border-line bg-surface p-4 shadow-pop">
+            <span
+              aria-hidden="true"
+              className={`mt-[6px] h-1.5 w-1.5 shrink-0 rounded-full ${dotClasses[alert.type]}`}
+            />
+            <div className="min-w-0 flex-1">
+              <p className="text-[13px] font-medium text-ink">{alert.title}</p>
+              {alert.messages.map((message, index) => (
+                <p
+                  key={index}
+                  className="mt-1 text-[12.5px] leading-relaxed text-ink-soft"
+                >
+                  {message}
+                </p>
+              ))}
             </div>
-            <div className="absolute top-0 right-0 p-4">
-              <button onClick={closeAlert}>
-                <FaXmark className="text-[#0F132499]" />
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={closeAlert}
+              aria-label="Dismiss notification"
+              className="-mr-1 -mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded text-[18px] leading-none text-ink-muted transition-colors hover:bg-paper hover:text-ink focus-visible:ring-2 focus-visible:ring-accent"
+            >
+              <span aria-hidden="true">×</span>
+            </button>
           </div>
         </div>
       )}
