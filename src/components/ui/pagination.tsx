@@ -1,8 +1,7 @@
 "use client";
-import { redirect } from "next/dist/server/api-utils";
+
 import { useRouter, useSearchParams } from "next/navigation";
-import React, { useState } from "react";
-import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import React from "react";
 
 interface PaginationProps {
   page: number;
@@ -10,49 +9,52 @@ interface PaginationProps {
   itemsCount: number;
 }
 
-const Pagination: React.FC<PaginationProps> = ({ page, pageSize, itemsCount }) => {
+const Pagination: React.FC<PaginationProps> = ({
+  page,
+  pageSize,
+  itemsCount,
+}) => {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const totalPages = Math.max(1, Math.ceil(itemsCount / pageSize));
 
-  const updateQueryParams = (newPage: number) => {
+  if (totalPages <= 1) {
+    return null;
+  }
+
+  const goToPage = (newPage: number) => {
     const params = new URLSearchParams(searchParams?.toString() || "");
-    params.set("page", newPage.toString());
-    return `/history/?${params.toString()}`;
-  };
 
-  const handlePrevious = () => {
-    if (page === 1) return;
-    router.push(updateQueryParams(page - 1));
-  };
+    if (newPage <= 1) {
+      params.delete("page");
+    } else {
+      params.set("page", newPage.toString());
+    }
 
-  const handleNext = () => {
-    if (page === Math.ceil(itemsCount / pageSize)) return;
-    router.push(updateQueryParams(page + 1));
+    const query = params.toString();
+    router.push(query ? `/history?${query}` : "/history");
   };
-
-  const activeStyle = "text-black bg-[#0A0F290A]";
 
   return (
-    <div className="inline-flex gap-3 text-[#0F132499]">
-      <button className="flex items-center justify-center w-8 h-8" onClick={handlePrevious}>
-        <FaArrowLeft />
+    <div className="flex items-center gap-3">
+      <button
+        type="button"
+        onClick={() => goToPage(page - 1)}
+        disabled={page <= 1}
+        className="btn-secondary h-8 px-3 text-[12px]"
+      >
+        Previous
       </button>
-
-      {Array.from({ length: Math.ceil(itemsCount / pageSize) }, (_, index) => {
-        const pageNumber = index + 1;
-        return (
-          <a
-            href={updateQueryParams(pageNumber)}
-            key={pageNumber}
-            className={`flex items-center justify-center w-8 h-8 rounded-xl ${page === pageNumber ? activeStyle : ""}`}
-          >
-            {pageNumber}
-          </a>
-        );
-      })}
-
-      <button className="flex items-center justify-center w-8 h-8" onClick={handleNext}>
-        <FaArrowRight />
+      <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-ink-muted">
+        Page {Math.min(page, totalPages)} of {totalPages}
+      </span>
+      <button
+        type="button"
+        onClick={() => goToPage(page + 1)}
+        disabled={page >= totalPages}
+        className="btn-secondary h-8 px-3 text-[12px]"
+      >
+        Next
       </button>
     </div>
   );

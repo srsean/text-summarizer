@@ -1,32 +1,73 @@
 "use client";
-import { useRouter, useSearchParams } from "next/navigation";
-import React, { useState } from "react";
-import { CiSearch } from "react-icons/ci";
+
 import { debounce } from "lodash";
+import { useRouter, useSearchParams } from "next/navigation";
+import React, { useEffect, useRef, useState } from "react";
 
 const SearchBar: React.FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get("search") || "";
+  const [value, setValue] = useState(searchQuery);
+  const paramsRef = useRef(searchParams);
 
-  const handleInputChange = debounce((event: React.ChangeEvent<HTMLInputElement>) => {
-    const query = event.target.value;
-    router.push(`/history?search=${query}`);
-  }, 500);
+  useEffect(() => {
+    paramsRef.current = searchParams;
+  }, [searchParams]);
+
+  useEffect(() => {
+    if (document.activeElement?.id !== "history-search") {
+      setValue(searchQuery);
+    }
+  }, [searchQuery]);
+
+  const pushSearch = useRef(
+    debounce((nextValue: string) => {
+      const params = new URLSearchParams(paramsRef.current?.toString() || "");
+
+      if (nextValue.trim()) {
+        params.set("search", nextValue);
+      } else {
+        params.delete("search");
+      }
+
+      params.delete("page");
+      router.push(`/history?${params.toString()}`);
+    }, 400)
+  ).current;
+
+  useEffect(() => {
+    return () => pushSearch.cancel();
+  }, [pushSearch]);
 
   return (
-    <div className="relative lg:w-[400px]">
-      <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-        <CiSearch className="h-5 w-5 text-gray-400" />
-      </div>
+    <div className="relative w-full sm:w-[280px]">
+      <label htmlFor="history-search" className="sr-only">
+        Search summaries
+      </label>
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-muted"
+      >
+        <circle cx="11" cy="11" r="7" />
+        <path d="m20 20-3.5-3.5" />
+      </svg>
       <input
-        onChange={handleInputChange}
-        defaultValue={searchQuery}
+        id="history-search"
         type="search"
-        id="default-search"
-        className="block w-full px-4 py-2.5 ps-10 text-sm text-gray-900 border border-gray-300 rounded-xl bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
-        placeholder="Search "
-        required
+        value={value}
+        onChange={(event) => {
+          setValue(event.target.value);
+          pushSearch(event.target.value);
+        }}
+        placeholder="Search summaries"
+        className="field-input h-9 pl-9 text-[13px]"
       />
     </div>
   );

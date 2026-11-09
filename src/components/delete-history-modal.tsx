@@ -1,16 +1,42 @@
 "use client";
+
 import useHistoryStore from "@/stores/history-store";
 import React, { useEffect, useActionState } from "react";
 import Modal from "./ui/modal";
 import { deleteTextSummaryHistory } from "@/app/history/actions";
 import { DeleteTextSummaryResponse } from "@/types/text-summary";
-import { IoIosClose } from "react-icons/io";
 import { useRouter } from "next/navigation";
 import { useAlert } from "./ui/alert";
+import { useFormStatus } from "react-dom";
 
-const initialState = {
+const initialState: DeleteTextSummaryResponse = {
   error: false,
   messages: [],
+};
+
+const ModalActions = ({ onClose }: { onClose: () => void }) => {
+  const { pending } = useFormStatus();
+
+  return (
+    <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+      <button
+        type="button"
+        className="btn-secondary w-full sm:w-auto"
+        onClick={onClose}
+        disabled={pending}
+      >
+        Cancel
+      </button>
+      <button
+        type="submit"
+        className="btn-danger w-full sm:w-auto"
+        disabled={pending}
+      >
+        {pending && <span className="spinner" aria-hidden="true" />}
+        {pending ? "Deleting…" : "Delete summary"}
+      </button>
+    </div>
+  );
 };
 
 const DeleteTextSummaryHistoryModal: React.FC = () => {
@@ -23,7 +49,7 @@ const DeleteTextSummaryHistoryModal: React.FC = () => {
   const { selectedTextSummary, mode, setMode, setSelectedTextSummary } =
     useHistoryStore((state) => state);
 
-  const isOpen = (selectedTextSummary && mode === "delete") ?? false;
+  const isOpen = Boolean(selectedTextSummary && mode === "delete");
 
   useEffect(() => {
     if (formState.error && formState.messages.length > 0) {
@@ -54,53 +80,36 @@ const DeleteTextSummaryHistoryModal: React.FC = () => {
   };
 
   return (
-    <Modal width="400px" isOpen={isOpen} onClose={onHide}>
+    <Modal width="420px" isOpen={isOpen} onClose={onHide}>
       <form action={formAction}>
         <input
           type="hidden"
           name="textSummaryId"
           value={selectedTextSummary?.id}
         />
-        <div className="flex items-start">
+        <div className="flex items-start justify-between gap-4">
           <div>
-            <h3
-              className="text-base font-semibold text-gray-900"
+            <h2
+              className="font-serif text-[23px] leading-tight tracking-[-0.01em] text-ink"
               id="modal-title"
             >
-              Delete summarized text?
-            </h3>
-            <div className="my-2">
-              <p className="text-sm text-gray-500">
-                You will not be able to recover it.
-              </p>
-            </div>
-            <div>
-              <button
-                type="button"
-                className="absolute top-0 right-0 m-4 text-gray-400 hover:text-gray-500 rounded-full bg-[#0A0F290A]"
-                onClick={onHide}
-              >
-                <span className="sr-only">Close</span>
-                <IoIosClose className="h-6 w-6" />
-              </button>
-            </div>
+              Delete this summary?
+            </h2>
+            <p className="mt-2 text-[13px] leading-relaxed text-ink-soft">
+              This entry will be permanently removed. You won&apos;t be able to
+              recover it.
+            </p>
           </div>
-        </div>
-        <div className="w-full flex flex-row">
           <button
             type="button"
-            className="mt-3 flex flex-grow justify-center rounded-xl bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
             onClick={onHide}
+            aria-label="Close dialog"
+            className="-mr-1 -mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded text-[20px] leading-none text-ink-muted transition-colors hover:bg-paper hover:text-ink focus-visible:ring-2 focus-visible:ring-accent"
           >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            className="flex flex-grow justify-center rounded-xl bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
-          >
-            Delete
+            <span aria-hidden="true">×</span>
           </button>
         </div>
+        <ModalActions onClose={onHide} />
       </form>
     </Modal>
   );

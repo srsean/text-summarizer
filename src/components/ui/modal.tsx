@@ -1,5 +1,6 @@
-import React from "react";
-import { IoIosClose } from "react-icons/io";
+"use client";
+
+import React, { useEffect } from "react";
 
 interface ModalProps {
   width?: string;
@@ -8,20 +9,49 @@ interface ModalProps {
   children: React.ReactNode;
 }
 
-const Modal: React.FC<ModalProps> = ({ width, isOpen, onClose, children }) => {
+const Modal: React.FC<ModalProps> = ({
+  width = "420px",
+  isOpen,
+  onClose,
+  children,
+}) => {
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   return (
-    <div className="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-      <div className="fixed inset-0 bg-gray-500/75 transition-opacity" aria-hidden="true"></div>
-      <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-        <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-          <div
-            className={`relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg`}
-            style={{ width: width ? width : "500px" }}
-          >
-            <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">{children}</div>
-          </div>
+    <div className="fixed inset-0 z-50 overflow-y-auto">
+      <div
+        className="fixed inset-0 bg-ink/40"
+        aria-hidden="true"
+        onClick={onClose}
+      ></div>
+      <div className="relative flex min-h-full items-center justify-center p-4">
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="modal-title"
+          className="relative w-full rounded-lg border border-line bg-surface shadow-pop"
+          style={{ maxWidth: width }}
+        >
+          <div className="p-6">{children}</div>
         </div>
       </div>
     </div>
