@@ -1,37 +1,53 @@
 "use client";
+
 import React, { useState } from "react";
-import { LuEye } from "react-icons/lu";
 
 interface PasswordInputProps {
   name: string;
+  label: string;
   placeholder?: string;
+  autoComplete?: string;
+  required?: boolean;
 }
 
-const PasswordInput: React.FC<PasswordInputProps> = ({ name, placeholder = "Enter your password" }) => {
+const PasswordInput: React.FC<PasswordInputProps> = ({
+  name,
+  label,
+  placeholder,
+  autoComplete,
+  required = false,
+}) => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
+  const id = name;
 
   return (
-    <div className="relative">
-      <input
-        type={showPassword ? "text" : "password"}
-        name={name}
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        className="text-black w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-xl"
-        placeholder={placeholder}
-      />
-      <button
-        type="button"
-        onClick={togglePasswordVisibility}
-        className="absolute inset-y-0 right-0 px-3 py-2 text-gray-600 focus:outline-none"
-      >
-        <LuEye color={showPassword ? "#0D1126" : "#0D112666 "} width={18} height={15} />
-      </button>
+    <div>
+      <label htmlFor={id} className="field-label">
+        {label}
+      </label>
+      <div className="relative">
+        <input
+          id={id}
+          type={showPassword ? "text" : "password"}
+          name={name}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="field-input pr-[64px]"
+          placeholder={placeholder}
+          autoComplete={autoComplete}
+          required={required}
+        />
+        <button
+          type="button"
+          onClick={() => setShowPassword((show) => !show)}
+          aria-label={showPassword ? "Hide password" : "Show password"}
+          aria-pressed={showPassword}
+          className="absolute inset-y-0 right-0 flex items-center px-3 font-mono text-[10px] uppercase tracking-[0.1em] text-ink-muted transition-colors hover:text-ink focus-visible:ring-2 focus-visible:ring-accent"
+        >
+          {showPassword ? "Hide" : "Show"}
+        </button>
+      </div>
     </div>
   );
 };

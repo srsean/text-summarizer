@@ -1,6 +1,6 @@
 "use client";
 
-import Alert, { useAlert } from "./alert";
+import { useAlert } from "./alert";
 import React, { useEffect, useActionState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -39,7 +39,7 @@ export function Form({ action, initialState, children }: FormProps) {
   }, [formState]);
 
   return (
-    <form className="space-y-4 md:space-y-6" action={formAction}>
+    <form className="space-y-5" action={formAction}>
       {children}
     </form>
   );

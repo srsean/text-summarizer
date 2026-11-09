@@ -6,20 +6,24 @@ import { useFormStatus } from "react-dom";
 interface ButtonProps {
   className?: string;
   children: React.ReactNode;
-  onClick?: () => void;
+  pendingLabel?: string;
 }
 
-const SubmitButton: React.FC<ButtonProps> = ({ className = "", children, onClick }) => {
+const SubmitButton: React.FC<ButtonProps> = ({
+  className = "",
+  children,
+  pendingLabel = "Please wait…",
+}) => {
   const { pending } = useFormStatus();
 
   return (
     <button
       type="submit"
-      className={`w-full text-white bg-gray-900 hover:bg-gray-400 disabled:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center ${className}`}
-      onClick={onClick}
+      className={`btn-primary w-full ${className}`}
       disabled={pending}
     >
-      {children}
+      {pending && <span className="spinner" aria-hidden="true" />}
+      {pending ? pendingLabel : children}
     </button>
   );
 };

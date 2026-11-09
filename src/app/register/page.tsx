@@ -1,60 +1,91 @@
-import Button from "@/components/ui/button";
-import PasswordInput from "@/components/ui/password-input";
-import TextInput from "@/components/ui/text-input";
-import Image from "next/image";
-import { registerUser } from "./actions";
-// @ts-ignore
-import { UserRegistrationResponse } from "@/types/auth";
-import Alert from "@/components/ui/alert";
+import AuthShell from "@/components/auth-shell";
 import { Form } from "@/components/ui/form";
+import PasswordInput from "@/components/ui/password-input";
 import SubmitButton from "@/components/ui/submit-button";
+import TextInput from "@/components/ui/text-input";
+import { UserRegistrationResponse } from "@/types/auth";
+import type { Metadata } from "next";
+import Link from "next/link";
+import { registerUser } from "./actions";
 
 const initialState: UserRegistrationResponse = {
   error: false,
   messages: [],
 };
 
+export const metadata: Metadata = {
+  title: "Create account",
+};
+
 export default async function Register() {
   return (
-    <section className="bg-white flex flex-col items-center justify-center px-6 py-8 mx-auto h-screen lg:py-0">
-      <div className="w-full bg-white rounded-lg lg:shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
-        <div className="p-6 space-y-4 md:space-y-6 sm:p-8 text-center">
-          <div className="flex justify-center">
-            <Image
-              src="/images/logo.png" // Route of the image file
-              height={60} // Desired size with correct aspect ratio
-              width={60} // Desired size with correct aspect ratio
-              alt="logo"
+    <AuthShell>
+      <div>
+        <p className="eyebrow">Account</p>
+        <h1 className="mt-3 font-serif text-[32px] leading-[1.15] tracking-[-0.02em] text-ink sm:text-[36px]">
+          Create your account
+        </h1>
+        <p className="mt-3 text-[13.5px] leading-relaxed text-ink-soft">
+          Set up a workspace to summarize text and keep a record of everything
+          you&apos;ve condensed.
+        </p>
+      </div>
+
+      <div className="mt-8">
+        <Form initialState={initialState} action={registerUser}>
+          <div className="grid gap-5 sm:grid-cols-2">
+            <TextInput
+              name="firstName"
+              label="First name"
+              autoComplete="given-name"
+              required
+            />
+            <TextInput
+              name="lastName"
+              label="Last name"
+              autoComplete="family-name"
+              required
             />
           </div>
-          <h1 className="text-[22px] font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-            Register to Undetectable AI
-          </h1>
-          <h3 className="text-[16px] text-[#14151A]"> Please fill in all fields to create your account</h3>
-
-          <Form initialState={initialState} action={registerUser}>
-            <div>
-              <TextInput name="firstName" placeholder="First Name" />
-            </div>
-            <div>
-              <TextInput name="lastName" placeholder="Last Name" />
-            </div>
-            <div>
-              <TextInput name="email" placeholder="Email" />
-            </div>
-            <div>
-              <TextInput name="username" placeholder="Username" />
-            </div>
-            <div>
-              <PasswordInput name="password" />
-            </div>
-            <div>
-              <PasswordInput name="confirmPassword" placeholder="Confirm Password" />
-            </div>
-            <SubmitButton className="rounded-xl">Create Account</SubmitButton>
-          </Form>
-        </div>
+          <TextInput
+            name="email"
+            type="email"
+            label="Email"
+            autoComplete="email"
+            required
+          />
+          <TextInput
+            name="username"
+            label="Username"
+            autoComplete="username"
+            required
+          />
+          <PasswordInput
+            name="password"
+            label="Password"
+            autoComplete="new-password"
+            required
+          />
+          <PasswordInput
+            name="confirmPassword"
+            label="Confirm password"
+            autoComplete="new-password"
+            required
+          />
+          <SubmitButton pendingLabel="Creating account…">
+            Create account
+          </SubmitButton>
+        </Form>
       </div>
-    </section>
+
+      <div className="mt-8 border-t border-line pt-5 text-[13px] text-ink-soft">
+        <p>
+          Already have an account?{" "}
+          <Link href="/login" className="link-underline">
+            Log in
+          </Link>
+        </p>
+      </div>
+    </AuthShell>
   );
 }

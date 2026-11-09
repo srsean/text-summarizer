@@ -1,23 +1,42 @@
 "use client";
+
 import React, { useState } from "react";
 
 interface TextInputProps {
+  label: string;
+  name: string;
+  type?: "text" | "email";
   placeholder?: string;
-  name?: string;
+  autoComplete?: string;
+  required?: boolean;
 }
 
-const TextInput: React.FC<TextInputProps> = ({ placeholder = "Enter text", name }) => {
+const TextInput: React.FC<TextInputProps> = ({
+  label,
+  name,
+  type = "text",
+  placeholder,
+  autoComplete,
+  required = false,
+}) => {
   const [text, setText] = useState("");
+  const id = name;
 
   return (
-    <div className="relative">
+    <div>
+      <label htmlFor={id} className="field-label">
+        {label}
+      </label>
       <input
-        type="text"
+        id={id}
+        type={type}
         name={name}
         value={text}
         onChange={(e) => setText(e.target.value)}
-        className="text-black w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-xl"
+        className="field-input"
         placeholder={placeholder}
+        autoComplete={autoComplete}
+        required={required}
       />
     </div>
   );
