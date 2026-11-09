@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-// @ts-expect-error
 import { useFormStatus } from "react-dom";
 
 interface ButtonProps {

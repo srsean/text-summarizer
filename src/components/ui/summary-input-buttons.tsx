@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-// @ts-expect-error
 import { useFormStatus } from "react-dom";
 import Spinner from "./spinner";
 import Image from "next/image";

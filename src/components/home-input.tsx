@@ -6,9 +6,7 @@ import { formatWithCommas } from "@/utils/format-number";
 import useHistoryStore from "@/stores/history-store";
 import useSidebarStore from "@/stores/sidebar-store";
 import { TextSummaryResponse } from "@/types/text-summary";
-import { useEffect, useState } from "react";
-// @ts-ignore
-import { useFormState } from "react-dom";
+import { useEffect, useState, useActionState } from "react";
 import { GoPaste } from "react-icons/go";
 import { RiKeyboardFill } from "react-icons/ri";
 import SummaryInputButtons from "./ui/summary-input-buttons";
@@ -36,7 +34,10 @@ const HomeInput: React.FC<HomeInputProps> = ({ guest }) => {
   const { selectedTextSummary, mode } = useHistoryStore((state) => state);
   const { textSummaryHistoryCount, setTextSummaryHistoryCount } =
     useSidebarStore((state) => state);
-  const [formState, formAction] = useFormState(summaryText, initialState);
+  const [formState, formAction] = useActionState<
+    TextSummaryResponse,
+    FormData
+  >(summaryText, initialState);
 
   const [alert, setAlert] = useState<{
     type: "error" | "success";

@@ -2,7 +2,7 @@
 
 import { getUserData } from "../actions";
 import prisma from "../../helpers/db";
-import { DeleteTextSummaryRequest, DeleteTextSummaryResponse, TextSummariesResponse } from "@/types/text-summary";
+import { DeleteTextSummaryResponse, TextSummariesResponse } from "@/types/text-summary";
 import { z } from "zod";
 import { getGteDate } from "@/utils/get_date_query";
 // export const dynamic = "force-dynamic"; // If you want no caching at all
@@ -70,7 +70,7 @@ const schema = z.object({
 });
 
 export async function deleteTextSummaryHistory(
-  prevState: DeleteTextSummaryRequest,
+  prevState: DeleteTextSummaryResponse,
   formData: FormData
 ): Promise<DeleteTextSummaryResponse> {
   const inputData = Object.fromEntries(formData.entries()) as Record<string, string>;

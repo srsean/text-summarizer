@@ -1,10 +1,9 @@
 "use client";
 import useHistoryStore from "@/stores/history-store";
-import React, { useEffect } from "react";
+import React, { useEffect, useActionState } from "react";
 import Modal from "./ui/modal";
-// @ts-ignore
-import { useFormState } from "react-dom";
 import { deleteTextSummaryHistory } from "@/app/history/actions";
+import { DeleteTextSummaryResponse } from "@/types/text-summary";
 import { IoIosClose } from "react-icons/io";
 import { useRouter } from "next/navigation";
 import { useAlert } from "./ui/alert";
@@ -17,10 +16,10 @@ const initialState = {
 const DeleteTextSummaryHistoryModal: React.FC = () => {
   const { showAlert } = useAlert();
   const router = useRouter();
-  const [formState, formAction] = useFormState(
-    deleteTextSummaryHistory,
-    initialState,
-  );
+  const [formState, formAction] = useActionState<
+    DeleteTextSummaryResponse,
+    FormData
+  >(deleteTextSummaryHistory, initialState);
   const { selectedTextSummary, mode, setMode, setSelectedTextSummary } =
     useHistoryStore((state) => state);
 

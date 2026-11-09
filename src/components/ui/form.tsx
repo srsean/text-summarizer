@@ -1,9 +1,7 @@
 "use client";
 
-// @ts-expect-error
-import { useFormState } from "react-dom";
 import Alert, { useAlert } from "./alert";
-import React, { useEffect } from "react";
+import React, { useEffect, useActionState } from "react";
 import { useRouter } from "next/navigation";
 
 type FormProps = {
@@ -16,7 +14,7 @@ export function Form({ action, initialState, children }: FormProps) {
   const { showAlert } = useAlert();
   const router = useRouter();
 
-  const [formState, formAction] = useFormState(action, initialState);
+  const [formState, formAction] = useActionState(action, initialState);
 
   useEffect(() => {
     if (formState.error && formState.messages.length > 0) {
