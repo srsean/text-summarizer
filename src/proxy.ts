@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server";
 import { decrypt } from "./helpers/session";
 import { cookies } from "next/headers";
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const protectedRoutes = ["/", "/history"];
   const currentPath = request.nextUrl.pathname;
   const isProtectedRoute = protectedRoutes.includes(currentPath);
