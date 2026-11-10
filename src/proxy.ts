@@ -11,10 +11,20 @@ export async function proxy(request: NextRequest) {
   // --- Handle guest mode (logout but stay on page)
   const guest = request.nextUrl.searchParams.get("guest");
   if (guest === "true") {
+    // Only mutate the session cookie on full document loads. Next prefetches
+    // the "Try as a guest" link on /login as an RSC request (Sec-Fetch-Dest:
+    // empty); if that prefetch response deleted the session cookie it could
+    // wipe the session that a login action just created, bouncing back to
+    // /login.
+    const isDocumentRequest =
+      request.headers.get("sec-fetch-dest") === "document";
+
     const response = NextResponse.next();
 
-    // Remove session cookie (logout)
-    response.cookies.delete("session");
+    if (isDocumentRequest) {
+      // Remove session cookie (logout)
+      response.cookies.delete("session");
+    }
 
     return response; // Stay on same page (no redirect)
   }
