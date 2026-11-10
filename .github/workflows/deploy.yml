@@ -30,7 +30,11 @@ jobs:
           npm ci
 
       - name: Build Next.js
-        run: npm run build
+        env:
+          ENV_FILE: ${{ vars.ENV }}
+        run: |
+          printf '%s\n' "$ENV_FILE" > .env
+          npm run build
 
       - name: Show All Files
         run: |
